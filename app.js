@@ -721,3 +721,13 @@ function stopAllSounds() {
 function closeAnswerOverlay() {
     document.getElementById("answer-overlay").classList.remove("show");
 }
+
+const questionText = document.getElementById("question-text");
+const questionTextContainer = document.getElementById("question-text-container");
+
+if(question.question_text && question.question_text.trim() !== ""){
+    questionText.textContent = question.question_text;
+    questionTextContainer.style.display = "block";
+}else{
+    questionTextContainer.style.display = "none";
+}

@@ -100,81 +100,108 @@
         </div>
 
         <!-- QUESTION SCREEN -->
-        <div id="question-screen" class="game-screen">
-            <div class="glass-card">
+<div id="question-screen" class="game-screen">
 
-                <!-- Question Type Badge -->
-                <div style="text-align:center;">
-                    <span class="question-type-badge" id="question-type">Guess the Movie</span>
-                </div>
+    <div class="glass-card">
 
-                <!-- Question Number -->
-                <div style="text-align:center;margin-bottom:20px;">
-                    <span id="question-number" style="font-size:1.2rem;color:var(--text-muted);">
-                        Question #1
-                    </span>
-                </div>
+        <!-- Question Type -->
+        <div style="text-align:center;">
+            <span class="question-type-badge" id="question-type">Guess the Movie</span>
+        </div>
 
-                <!-- MAIN LAYOUT -->
-                 <div class="question-layout">
+        <!-- Question Number -->
+        <div style="text-align:center;margin-bottom:20px;">
+            <span id="question-number" style="font-size:1.2rem;color:var(--text-muted);">
+                Question #1
+            </span>
+        </div>
 
-    <!-- Media -->
-    <div class="media-container" id="media-container">
-        <!-- Media will load here -->
-    </div>
+        <!-- Layout -->
+        <div class="question-layout">
 
-    <!-- Question Text -->
-    <div class="question-text-container" id="question-text">
-    </div>
-
-    <!-- Side Panel -->
-    <div class="question-side">
-
-        <div class="timer-container">
-            <div class="timer-display" id="timer-display">
-                <svg class="timer-ring-container" viewBox="0 0 156 156">
-                    <circle class="timer-ring-bg" cx="78" cy="78" r="74"></circle>
-                    <circle class="timer-ring-progress" id="timer-ring" cx="78" cy="78" r="74"></circle>
-                </svg>
-                <span id="timer-text">10</span>
+            <!-- Media -->
+            <div class="media-container" id="media-container">
+                <div class="media-placeholder">Loading media...</div>
             </div>
-            <span class="timer-label">Seconds</span>
+
+            <!-- Question Text -->
+            <div class="question-text-container" id="question-text-container">
+                <div id="question-text"></div>
+            </div>
+
+            <!-- Side Panel -->
+            <div class="question-side">
+
+                <div class="timer-container">
+
+                    <div class="timer-display" id="timer-display">
+
+                        <svg class="timer-ring-container" viewBox="0 0 156 156">
+
+                            <circle class="timer-ring-bg" cx="78" cy="78" r="74"></circle>
+
+                            <circle class="timer-ring-progress"
+                                    id="timer-ring"
+                                    cx="78"
+                                    cy="78"
+                                    r="74"></circle>
+
+                        </svg>
+
+                        <span id="timer-text">10</span>
+
+                    </div>
+
+                    <span class="timer-label" id="timer-label">Seconds</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Answer Overlay -->
+        <div id="answer-overlay" class="answer-overlay">
+
+            <div class="answer-card">
+
+                <button class="answer-close-btn"
+                        onclick="closeAnswerOverlay()">✕</button>
+
+                <h2>Answer</h2>
+
+                <div id="answer-text"></div>
+
+            </div>
+
+        </div>
+
+        <!-- Buttons -->
+        <div class="btn-container">
+
+            <button id="start-timer-btn"
+                    class="btn btn-primary">Start Timer</button>
+
+            <button id="reveal-answer-btn"
+                    class="btn btn-success"
+                    style="display:none;">Reveal Answer</button>
+
+            <button class="btn btn-success"
+                    onclick="location.href='index.html'">Home</button>
+
+        </div>
+
+        <div id="next-question-btn-container"
+             style="display:none;text-align:center;margin-top:20px;">
+
+            <button class="btn btn-success"
+                    onclick="playNextQuestion()">Next Question</button>
+
         </div>
 
     </div>
 
 </div>
-
-                <!-- Answer Overlay -->
-                <div id="answer-overlay" class="answer-overlay">
-
-                    <div class="answer-card">
-
-                        <button class="answer-close-btn" onclick="closeAnswerOverlay()">✕</button>
-
-                        <h2>Answer</h2>
-
-                        <div id="answer-text"></div>
-
-                    </div>
-
-                </div>
-
-                <!-- Buttons -->
-                <div class="btn-container">
-                    <button id="start-timer-btn" class="btn btn-primary">Start Timer</button>
-
-                    <button id="reveal-answer-btn" class="btn btn-success" style="display:none;">Reveal Answer</button>
-                    <button class="btn btn-success" onclick="location.href='index.html'">Home</button>
-
-                </div>
-
-                <div id="next-question-btn-container" style="display:none;text-align:center;margin-top:20px;">
-                    <button class="btn btn-success" onclick="playNextQuestion()">Next Question</button>
-                </div>
-
-            </div>
-        </div>
     </div>
 
     <!-- Admin Link -->

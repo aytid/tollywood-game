@@ -692,7 +692,7 @@ header h1 {
 .question-layout {
     display: flex;
     gap: 30px;
-    align-items: center;
+    align-items: flex-start;   /* FIX */
     justify-content: center;
     flex-direction: row;
     margin-bottom: 20px;
@@ -940,4 +940,122 @@ header h1 {
     max-width: 100%;
     height: auto;
     border-radius: 10px;
+}
+
+
+
+
+
+
+/* Answer Overlay Background */
+.answer-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0,0,0,0.85);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0;
+    visibility: hidden;
+
+    transition: all 0.4s ease;
+    border-radius: 20px;
+}
+
+/* When answer is revealed */
+.answer-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Answer Card */
+.answer-card {
+    background: linear-gradient(135deg,#1f1f3a,#2b2b55);
+    padding: 40px 60px;
+    border-radius: 20px;
+
+    text-align: center;
+
+    box-shadow:
+        0 0 40px rgba(0,0,0,0.6),
+        0 0 30px rgba(0,217,165,0.3);
+
+    transform: scale(0.6);
+    opacity: 0;
+
+    animation: answerPop 0.45s ease forwards;
+}
+
+/* Answer Title */
+.answer-card h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    color: #ffd93d;
+}
+
+/* Actual Answer Text */
+#answer-text {
+    font-size: 2.5rem;
+    font-weight: 800;
+
+    color: #00d9a5;
+
+    text-shadow:
+        0 0 10px rgba(0,217,165,0.6),
+        0 0 25px rgba(0,217,165,0.5);
+
+    animation: answerTextGlow 1.2s ease infinite alternate;
+}
+
+/* Close button */
+.answer-close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+    background: transparent;
+    border: none;
+
+    font-size: 24px;
+    color: white;
+
+    cursor: pointer;
+}
+
+/* Card pop animation */
+@keyframes answerPop {
+    0%{
+        transform: scale(0.6);
+        opacity: 0;
+    }
+
+    70%{
+        transform: scale(1.05);
+    }
+
+    100%{
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Glow animation */
+@keyframes answerTextGlow {
+    from{
+        text-shadow:
+        0 0 10px rgba(0,217,165,0.4),
+        0 0 20px rgba(0,217,165,0.4);
+    }
+
+    to{
+        text-shadow:
+        0 0 20px rgba(0,217,165,0.8),
+        0 0 40px rgba(0,217,165,0.8);
+    }
 }

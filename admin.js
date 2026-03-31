@@ -272,7 +272,7 @@ async function loadDashboardData() {
 // Load Questions
 async function loadQuestions() {
     try {
-        showLoading('questions-table', true);
+        showLoading('questions-cards', true);
 
         // Load types first if not already loaded
         if (adminState.questionTypes.length === 0) {
@@ -291,29 +291,22 @@ async function loadQuestions() {
 
         adminState.questions = data || [];
         renderQuestionsTable(data);
-
-        // Auto-populate next question number based on count (since we maintain sequential numbering)
-        const nextNumber = (data?.length || 0) + 1;
-        const questionNumberInput = document.getElementById('question-number');
-        if (questionNumberInput) {
-            questionNumberInput.value = nextNumber;
-            questionNumberInput.placeholder = `Next: ${nextNumber}`;
-        }
-
+        adminState.questions = data || [];
+        renderQuestionsTable(data);
     } catch (error) {
         console.error('Error loading questions:', error);
         showAlert('Failed to load questions', 'error');
     } finally {
-        showLoading('questions-table', false);
+        showLoading('questions-cards', false);
     }
 }
 
 // Render Questions Table
-function renderQuestionsTable(questions){
+function renderQuestionsTable(questions) {
 
     const container = document.getElementById("questions-cards");
 
-    if(!questions || questions.length===0){
+    if (!questions || questions.length === 0) {
         container.innerHTML = `
             <div style="padding:40px;text-align:center;color:#94a3b8;">
                 No questions found
@@ -322,28 +315,28 @@ function renderQuestionsTable(questions){
         return;
     }
 
-    container.innerHTML = questions.map(q=>{
+    container.innerHTML = questions.map(q => {
 
         let preview = "";
 
-        if(q.media_url){
+        if (q.media_url) {
 
-            if(q.media_type==="video"){
+            if (q.media_type === "video") {
                 preview = `<video class="question-preview" src="${q.media_url}"></video>`;
             }
 
-            else if(q.media_type==="audio"){
+            else if (q.media_type === "audio") {
                 preview = `
                 <div style="height:150px;display:flex;align-items:center;justify-content:center;background:#0f172a;">
                     🎧 Audio
                 </div>`;
             }
 
-            else{
+            else {
                 preview = `<img class="question-preview" src="${q.media_url}">`;
             }
 
-        }else{
+        } else {
             preview = `
             <div style="height:150px;display:flex;align-items:center;justify-content:center;background:#0f172a;">
                 No Preview
@@ -405,30 +398,40 @@ async function loadQuestionTypes() {
 }
 
 // Render Question Types
-function renderQuestionTypes(types) {
-    const tbody = document.getElementById('types-tbody');
+function renderQuestionTypes(types){
 
-    if (!types || types.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="3" class="text-center" style="padding: 40px; color: var(--text-secondary);">
-                    No question types found.
-                </td>
-            </tr>
+    const container = document.getElementById("types-grid");
+
+    if(!types || types.length===0){
+        container.innerHTML = `
+            <div style="padding:40px;text-align:center;color:#94a3b8;">
+                No question types found
+            </div>
         `;
         return;
     }
 
-    tbody.innerHTML = types.map(t => `
-        <tr>
-            <td>${t.type_name}</td>
-            <td>
-                <button class="btn btn-sm btn-danger" onclick="deleteQuestionType('${t.id}')">Delete</button>
-            </td>
-        </tr>
-    `).join('');
-}
+    container.innerHTML = types.map(t=>`
 
+        <div class="type-card">
+
+            <button class="delete-type"
+                onclick="deleteQuestionType('${t.id}')">
+                🗑
+            </button>
+
+            <div class="type-name">
+                ${t.type_name}
+            </div>
+
+            <div class="type-desc">
+                ${t.description || ""}
+            </div>
+
+        </div>
+
+    `).join("");
+}
 // Populate Type Dropdowns
 function populateTypeDropdowns(types) {
     const addSelect = document.getElementById('question-type');
@@ -463,12 +466,6 @@ async function handleAddQuestion(e) {
     const formData = new FormData(e.target);
     const submitBtn = e.target.querySelector('button[type="submit"]');
 
-    let questionNumber = parseInt(formData.get('question-number'));
-    if (!questionNumber || questionNumber < 1) {
-        showAlert('Please enter a valid question number', 'error');
-        return;
-    }
-
     if (!formData.get('question-type')) {
         showAlert('Please select a question type', 'error');
         return;
@@ -480,10 +477,21 @@ async function handleAddQuestion(e) {
     try {
 
         // Check if question number already exists
-        const { data: existingQuestions, error: checkError } = await supabase
+        // Get last question number
+        const { data: lastQuestion, error: lastError } = await supabase
             .from('questions')
-            .select('id, question_number')
-            .order('question_number', { ascending: true });
+            .select('question_number')
+            .order('question_number', { ascending: false })
+            .limit(1);
+
+        if (lastError) throw lastError;
+
+        // Calculate next number
+        let questionNumber = 1;
+
+        if (lastQuestion && lastQuestion.length > 0) {
+            questionNumber = lastQuestion[0].question_number + 1;
+        }
 
         if (checkError) throw checkError;
 
@@ -577,7 +585,7 @@ async function uploadMedia(file) {
 
     if (file.type.startsWith('video')) {
         type = 'video';
-    } 
+    }
     else if (file.type.startsWith('audio')) {
         type = 'audio';
     }
@@ -651,7 +659,6 @@ async function editQuestion(id) {
 
     // Populate form
     document.getElementById('edit-question-id').value = question.id;
-    document.getElementById('edit-question-number').value = question.question_number;
     setTimeout(() => {
         document.getElementById('edit-question-type').value = question.question_type || '';
     }, 100);
@@ -705,7 +712,6 @@ async function handleUpdateQuestion(e) {
         const { error } = await supabase
             .from('questions')
             .update({
-                question_number: parseInt(formData.get('question-number')),
                 question_type: formData.get('question-type'),
                 media_url: mediaUrl,
                 media_type: mediaType,
