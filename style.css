@@ -916,3 +916,28 @@ header h1 {
         order: -1;
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+.question-text-container{
+    font-size: 28px;
+    font-weight: 600;
+    text-align: center;
+    padding: 20px;
+    max-width: 100%;
+    word-wrap: break-word;
+}
+
+.question-text-container img{
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+}

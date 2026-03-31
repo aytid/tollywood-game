@@ -299,6 +299,7 @@ function updateQuestionScreen(question) {
     const timerDisplay = document.getElementById('timer-display');
     const timerText = document.getElementById('timer-text');
     const ring = document.getElementById('timer-ring');
+    const timeLabel =  document.getElementById('timer-label');
 
     mediaContainer.innerHTML = '';
 
@@ -310,6 +311,7 @@ function updateQuestionScreen(question) {
     if (isAudioQuestion) {
         // Hide timer for audio questions
         if (timerDisplay) timerDisplay.style.display = "none";
+        if (timeLabel) timeLabel.style.display = "none";
 
         if (question.media_url) {
             const audio = document.createElement('audio');
