@@ -74,19 +74,23 @@
         <!-- READY SCREEN -->
         <div id="ready-screen" class="game-screen">
             <div class="glass-card" style="text-align: center;">
-                <div class="question-type-badge" id="ready-question-type">
-                    Guess the Movie
-                </div>
 
                 <div class="question-number-display" id="ready-question-number">
                     #1
                 </div>
+
+                <div class="question-type-badge" id="ready-question-type">
+                    Guess the Movie
+                </div>
+
 
                 <p class="ready-text">Are you ready?</p>
 
                 <div class="btn-container">
                     <button id="ready-next-btn" class="btn btn-accent">Reveal Question</button>
                     <button class="btn btn-secondary" onclick="resetGame()">Back</button>
+                    <button id="ready-other-btn" class="btn btn-accent" onclick="spinRandomQuestion()">Other
+                        Question</button>
                 </div>
             </div>
         </div>
@@ -113,6 +117,9 @@
                     <!-- Media -->
                     <div class="media-container" id="media-container">
                         <!-- Media will load here -->
+                    </div>
+
+                    <div class="media-container" id="question-text">
                     </div>
 
                     <!-- Side Panel -->

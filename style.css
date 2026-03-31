@@ -371,7 +371,7 @@ header h1 {
     padding: 12px 30px;
     background: var(--secondary-gradient);
     border-radius: 30px;
-    font-size: 1.3rem;
+    font-size: 2rem;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -380,7 +380,7 @@ header h1 {
 }
 
 .question-number-display {
-    font-size: 4rem;
+    font-size: 2rem;
     font-weight: 800;
     margin: 20px 0;
     text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);

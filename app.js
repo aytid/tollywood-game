@@ -183,7 +183,7 @@ async function fetchQuestion(questionNumber) {
 function updateReadyScreen(question) {
     const typeName = question.question_types?.type_name || question.question_type || 'General';
     document.getElementById('ready-question-type').textContent = typeName;
-    document.getElementById('ready-question-number').textContent = `#${question.question_number}`;
+    document.getElementById('ready-question-number').textContent = 'Question '+`#${question.question_number}`;
 }
 
 // Show Question Screen
@@ -208,6 +208,7 @@ function updateQuestionScreen(question) {
 
     document.getElementById('question-type').textContent = typeName;
     document.getElementById('question-number').textContent = `Question #${question.question_number}`;
+    document.getElementById('question-text').textContent = question.question_text || '';
 
     // Handle media
     const mediaContainer = document.getElementById('media-container');

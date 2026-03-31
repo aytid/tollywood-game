@@ -339,9 +339,13 @@ function renderQuestionsTable(questions) {
             <td>#${q.question_number}</td>
             <td>${q.question_types?.type_name || q.question_type || 'N/A'}</td>
             <td>
-                ${q.media_url ?
-            `<img src="${q.media_url}" alt="Preview" class="media-preview" onerror="this.src='assets/placeholder.png'">` :
-            '<span style="color: var(--text-secondary);">No media</span>'
+${q.media_url ?
+            `<img src="${q.media_url}" 
+      alt="Preview" 
+      class="media-preview"
+      onerror="this.outerHTML='<span style=&quot;color: var(--text-secondary);&quot;>No Preview Available</span>'">`
+            :
+            '<span style="color: var(--text-secondary);">No Preview Available</span>'
         }
             </td>
             <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">${q.answer || 'N/A'}</td>
@@ -614,8 +618,8 @@ async function editQuestion(id) {
     document.getElementById('edit-question-id').value = question.id;
     document.getElementById('edit-question-number').value = question.question_number;
     setTimeout(() => {
-    document.getElementById('edit-question-type').value = question.question_type || '';
-}, 100);
+        document.getElementById('edit-question-type').value = question.question_type || '';
+    }, 100);
     document.getElementById('edit-question-text').value = question.question_text || '';
     document.getElementById('edit-answer').value = question.answer || '';
     document.getElementById('edit-timer-seconds').value = question.timer_seconds || 10;
