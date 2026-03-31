@@ -300,7 +300,14 @@ function updateQuestionScreen(question) {
     const timerText = document.getElementById('timer-text');
     const ring = document.getElementById('timer-ring');
     const timeLabel =  document.getElementById('timer-label');
-
+    
+    const timerContainer = document.getElementById("timer-container");
+    // HIDE TIMER IF 0
+    if (question.timer_seconds === 0) {
+        timerContainer.style.display = "none";
+    } else {
+        timerContainer.style.display = "block";
+    }
     mediaContainer.innerHTML = '';
 
     const isAudioQuestion =

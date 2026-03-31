@@ -652,7 +652,7 @@ async function editQuestion(id) {
     }, 100);
     document.getElementById('edit-question-text').value = question.question_text || '';
     document.getElementById('edit-answer').value = question.answer || '';
-    document.getElementById('edit-timer-seconds').value = question.timer_seconds || 10;
+    document.getElementById('edit-timer-seconds').value = question.timer_seconds || 0;
     document.getElementById('edit-is-active').checked = question.is_active;
 
     // Show current media
