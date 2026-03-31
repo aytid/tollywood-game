@@ -92,7 +92,7 @@ function initializeSupabase() {
 
 async function spinRandomQuestion() {
     
-    playSound("next-question");
+    // playSound("next-question");
     const spinBtn = document.getElementById('spin-btn');
     spinBtn.disabled = true;
 
@@ -302,7 +302,7 @@ async function revealAnswer() {
     answerOverlay.classList.add('show');
 
     // Play success sound and confetti
-    playSound('success');
+    stopAllSounds();
     fireConfetti();
 
     // Log game history
@@ -611,4 +611,10 @@ async function playNextQuestion() {
     document.getElementById('next-question-btn-container').style.display = 'none';
 
     await spinRandomQuestion();
+}
+function stopAllSounds(){
+    Object.values(sounds).forEach(sound=>{
+        sound.pause();
+        sound.currentTime = 0;
+    });
 }
