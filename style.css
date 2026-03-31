@@ -692,7 +692,7 @@ header h1 {
 .question-layout {
     display: flex;
     gap: 30px;
-    align-items: flex-start;   /* FIX */
+    align-items: flex-start;
     justify-content: center;
     flex-direction: row;
     margin-bottom: 20px;

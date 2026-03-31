@@ -474,88 +474,76 @@ async function handleAddQuestion(e) {
     submitBtn.innerHTML = '<span class="spinner"></span> Saving...';
     submitBtn.disabled = true;
 
-    try {
+  try {
 
-        // Check if question number already exists
-        // Get last question number
-        const { data: lastQuestion, error: lastError } = await supabase
-            .from('questions')
-            .select('question_number')
-            .order('question_number', { ascending: false })
-            .limit(1);
+    // Get all existing question numbers
+    const { data: existingQuestions, error: checkError } = await supabase
+        .from('questions')
+        .select('question_number');
 
-        if (lastError) throw lastError;
+    if (checkError) throw checkError;
 
-        // Calculate next number
-        let questionNumber = 1;
+    // Find next available question number
+    let questionNumber = 1;
 
-        if (lastQuestion && lastQuestion.length > 0) {
-            questionNumber = lastQuestion[0].question_number + 1;
+    if (existingQuestions && existingQuestions.length > 0) {
+
+        const usedNumbers = new Set(
+            existingQuestions.map(q => q.question_number)
+        );
+
+        while (usedNumbers.has(questionNumber)) {
+            questionNumber++;
         }
 
-        if (checkError) throw checkError;
+    }
 
-        const duplicate = existingQuestions?.find(q => q.question_number === questionNumber);
+    // Upload media if provided
+    let mediaUrl = null;
+    let mediaType = null;
 
-        if (duplicate) {
-            const usedNumbers = new Set(existingQuestions.map(q => q.question_number));
-            let nextNumber = 1;
+    const mediaFile = document.getElementById('media-file').files[0];
 
-            while (usedNumbers.has(nextNumber)) {
-                nextNumber++;
+    if (mediaFile) {
+        const uploadResult = await uploadMedia(mediaFile);
+        mediaUrl = uploadResult.url;
+        mediaType = uploadResult.type;
+    }
+
+    // Insert question
+    const { data, error } = await supabase
+        .from('questions')
+        .insert([
+            {
+                question_number: questionNumber,
+                question_type: formData.get('question-type'),
+                media_url: mediaUrl,
+                media_type: mediaType,
+                question_text: formData.get('question-text'),
+                answer: formData.get('answer'),
+                timer_seconds: parseInt(formData.get('timer-seconds')) || 10,
+                is_active: formData.get('is-active') === 'on'
             }
+        ])
+        .select();
 
-            showAlert(`Question #${questionNumber} already exists. Using next available number: ${nextNumber}`, 'warning');
-            questionNumber = nextNumber;
-        }
+    if (error) throw error;
 
-        // Upload media if provided
-        let mediaUrl = null;
-        let mediaType = null;
+    showAlert('Question added successfully!', 'success');
 
-        const mediaFile = document.getElementById('media-file').files[0];
+    e.target.reset();
+    document.getElementById('file-preview').innerHTML = '';
 
-        if (mediaFile) {
-            const uploadResult = await uploadMedia(mediaFile);
+    if (adminState.currentTab === 'questions') {
+        loadQuestions();
+    }
 
-            mediaUrl = uploadResult.url;
-            mediaType = uploadResult.type;
-        }
+} catch (error) {
 
-        // Insert question
-        const { data, error } = await supabase
-            .from('questions')
-            .insert([
-                {
-                    question_number: questionNumber,
-                    question_type: formData.get('question-type'),
-                    media_url: mediaUrl,
-                    media_type: mediaType,
-                    question_text: formData.get('question-text'),
-                    answer: formData.get('answer'),
-                    timer_seconds: parseInt(formData.get('timer-seconds')) || 10,
-                    is_active: formData.get('is-active') === 'on'
-                }
-            ])
-            .select();
+    console.error('Error adding question:', error);
+    showAlert(error.message || 'Failed to add question', 'error');
 
-        if (error) throw error;
-
-        showAlert('Question added successfully!', 'success');
-
-        e.target.reset();
-        document.getElementById('file-preview').innerHTML = '';
-
-        if (adminState.currentTab === 'questions') {
-            loadQuestions();
-        }
-
-    } catch (error) {
-
-        console.error('Error adding question:', error);
-        showAlert(error.message || 'Failed to add question', 'error');
-
-    } finally {
+}finally {
 
         submitBtn.innerHTML = 'Save Question';
         submitBtn.disabled = false;
