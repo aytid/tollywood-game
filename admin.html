@@ -329,8 +329,7 @@
                                     </h3>
 
                                     <div class="file-upload" onclick="document.getElementById('media-file').click()">
-                                        <input type="file" id="media-file" name="media-file" accept="image/*,video/*"
-                                            onchange="handleFilePreview(event)">
+                                        <input type="file" id="media-file" name="media-file" accept="image/*,video/*,audio/mpeg" onchange="handleFilePreview(event)">
                                         <svg class="file-upload-icon" viewBox="0 0 24 24" fill="none"
                                             stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round">
@@ -339,7 +338,7 @@
                                             <line x1="12" y1="3" x2="12" y2="15" />
                                         </svg>
                                         <div class="file-upload-text">Click to upload media</div>
-                                        <div class="file-upload-hint">Supports: JPG, PNG, GIF, MP4 (max 10MB)
+                                        <div class="file-upload-hint">Supports: JPG, PNG, GIF, MP4, MP3 (max 10MB)
                                         </div>
                                     </div>
                                     <div id="file-preview" class="file-preview hidden"></div>

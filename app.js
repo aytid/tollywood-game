@@ -204,34 +204,69 @@ function showQuestion() {
 
 // Update Question Screen
 function updateQuestionScreen(question) {
+
     const typeName = question.question_types?.type_name || question.question_type || 'General';
 
     document.getElementById('question-type').textContent = typeName;
     document.getElementById('question-number').textContent = `Question #${question.question_number}`;
     document.getElementById('question-text').textContent = question.question_text || '';
 
-    // Handle media
     const mediaContainer = document.getElementById('media-container');
+    const timerDisplay = document.getElementById('timer-display');
+
     mediaContainer.innerHTML = '';
 
-    if (question.media_url) {
-        if (question.media_type === 'video') {
-            const video = document.createElement('video');
-            video.src = question.media_url;
-            video.controls = true;
-            video.preload = 'metadata';
-            mediaContainer.appendChild(video);
-        } else {
-            const img = document.createElement('img');
-            img.src = question.media_url;
-            img.alt = 'Question Image';
-            img.loading = 'lazy';
-            mediaContainer.appendChild(img);
+    const isAudioQuestion =
+        question.media_type === 'audio' ||
+        question.question_type === 'Audio' ||
+        typeName.toLowerCase() === 'audio';
+
+    if (isAudioQuestion) {
+
+        // hide timer
+        timerDisplay.style.display = "none";
+
+        // remove image placeholder
+        mediaContainer.innerHTML = '';
+
+        if (question.media_url) {
+            const audio = document.createElement('audio');
+            audio.src = question.media_url;
+            audio.controls = true;
+            audio.autoplay = true;
+            audio.preload = "metadata";
+
+            mediaContainer.appendChild(audio);
+        }
+
+    } else {
+
+        // show timer for normal questions
+        timerDisplay.style.display = "block";
+
+        if (question.media_url) {
+
+            if (question.media_type === 'video') {
+
+                const video = document.createElement('video');
+                video.src = question.media_url;
+                video.controls = true;
+                video.preload = "metadata";
+                mediaContainer.appendChild(video);
+
+            } else {
+
+                const img = document.createElement('img');
+                img.src = question.media_url;
+                img.alt = "Question Image";
+                img.loading = "lazy";
+                mediaContainer.appendChild(img);
+
+            }
         }
     }
 
-    // Reset timer display
-    const timerDisplay = document.getElementById('timer-display');
+    // Reset timer value
     timerDisplay.textContent = question.timer_seconds || 10;
     timerDisplay.classList.remove('warning', 'danger');
 
@@ -243,7 +278,6 @@ function updateQuestionScreen(question) {
     const answerOverlay = document.getElementById('answer-overlay');
     answerOverlay.classList.remove('show');
 }
-
 // Start Timer
 function startTimer() {
     if (!gameState.currentQuestion) return;

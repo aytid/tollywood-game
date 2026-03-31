@@ -458,6 +458,7 @@ async function handleAddQuestion(e) {
     submitBtn.disabled = true;
 
     try {
+
         // Check if question number already exists
         const { data: existingQuestions, error: checkError } = await supabase
             .from('questions')
@@ -466,13 +467,12 @@ async function handleAddQuestion(e) {
 
         if (checkError) throw checkError;
 
-        // Check for duplicate question number
         const duplicate = existingQuestions?.find(q => q.question_number === questionNumber);
 
         if (duplicate) {
-            // Find the next available question number
             const usedNumbers = new Set(existingQuestions.map(q => q.question_number));
             let nextNumber = 1;
+
             while (usedNumbers.has(nextNumber)) {
                 nextNumber++;
             }
@@ -486,8 +486,10 @@ async function handleAddQuestion(e) {
         let mediaType = null;
 
         const mediaFile = document.getElementById('media-file').files[0];
+
         if (mediaFile) {
             const uploadResult = await uploadMedia(mediaFile);
+
             mediaUrl = uploadResult.url;
             mediaType = uploadResult.type;
         }
@@ -495,45 +497,50 @@ async function handleAddQuestion(e) {
         // Insert question
         const { data, error } = await supabase
             .from('questions')
-            .insert([{
-                question_number: questionNumber,
-                question_type: formData.get('question-type'),
-                media_url: mediaUrl,
-                media_type: mediaType,
-                question_text: formData.get('question-text'),
-                answer: formData.get('answer'),
-                timer_seconds: parseInt(formData.get('timer-seconds')) || 10,
-                is_active: formData.get('is-active') === 'on'
-            }])
+            .insert([
+                {
+                    question_number: questionNumber,
+                    question_type: formData.get('question-type'),
+                    media_url: mediaUrl,
+                    media_type: mediaType,
+                    question_text: formData.get('question-text'),
+                    answer: formData.get('answer'),
+                    timer_seconds: parseInt(formData.get('timer-seconds')) || 10,
+                    is_active: formData.get('is-active') === 'on'
+                }
+            ])
             .select();
 
         if (error) throw error;
 
         showAlert('Question added successfully!', 'success');
+
         e.target.reset();
         document.getElementById('file-preview').innerHTML = '';
 
-        // Refresh questions list if on that tab
         if (adminState.currentTab === 'questions') {
             loadQuestions();
         }
 
     } catch (error) {
+
         console.error('Error adding question:', error);
         showAlert(error.message || 'Failed to add question', 'error');
+
     } finally {
+
         submitBtn.innerHTML = 'Save Question';
         submitBtn.disabled = false;
+
     }
 }
-
-// Upload Media to Supabase Storage
 async function uploadMedia(file) {
+
     const fileExt = file.name.split('.').pop();
     const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
     const filePath = `questions/${fileName}`;
 
-    const { data, error } = await supabase.storage
+    const { error } = await supabase.storage
         .from('game-media')
         .upload(filePath, file, {
             cacheControl: '3600',
@@ -542,14 +549,22 @@ async function uploadMedia(file) {
 
     if (error) throw error;
 
-    // Get public URL
     const { data: { publicUrl } } = supabase.storage
         .from('game-media')
         .getPublicUrl(filePath);
 
+    let type = 'image';
+
+    if (file.type.startsWith('video')) {
+        type = 'video';
+    } 
+    else if (file.type.startsWith('audio')) {
+        type = 'audio';
+    }
+
     return {
         url: publicUrl,
-        type: file.type.startsWith('video') ? 'video' : 'image'
+        type: type
     };
 }
 
