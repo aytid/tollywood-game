@@ -351,6 +351,7 @@ function updateQuestionScreen(question) {
                 const video = document.createElement('video');
                 video.src = question.media_url;
                 video.controls = true;
+                video.autoplay = true;
                 video.preload = "metadata";
                 video.style.maxWidth = "450px";
                 video.style.borderRadius = "20px";
@@ -358,6 +359,7 @@ function updateQuestionScreen(question) {
                 mediaContainer.appendChild(video);
             } else {
                 const img = document.createElement('img');
+                playSound('tick');
                 img.src = question.media_url;
                 img.alt = "Question Image";
                 img.loading = "lazy";
