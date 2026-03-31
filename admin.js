@@ -1,5 +1,3 @@
-// Admin Panel JavaScript
-
 // Admin State
 const adminState = {
     currentUser: null,
@@ -189,7 +187,7 @@ function switchTab(tabName) {
     });
 
     // Hide all sections
-    document.querySelectorAll('.section').forEach(section => {
+    document.querySelectorAll('.section-content').forEach(section => {
         section.classList.add('hidden');
     });
 
@@ -928,3 +926,11 @@ window.deleteQuestionType = deleteQuestionType;
 window.openModal = openModal;
 window.closeModal = closeModal;
 window.loadGameHistory = loadGameHistory;
+
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+    document.getElementById('sidebar-overlay').classList.toggle('show');
+}
+
+// Close sidebar when clicking overlay
+document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar);

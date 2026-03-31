@@ -3,521 +3,1908 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Panel - Team Building Game</title>
-    <link rel="stylesheet" href="admin.css">
-    <!-- Supabase JS Client -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Admin Console | Team Building Game</title>
+    <meta name="theme-color" content="#0f172a">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #8b5cf6;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --info: #3b82f6;
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --bg-tertiary: #334155;
+            --bg-elevated: #283548;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-tertiary: #64748b;
+            --border-color: #334155;
+            --border-subtle: #1e293b;
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --sidebar-width: 280px;
+            --sidebar-collapsed: 72px;
+            --header-height: 64px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 16px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-secondary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--bg-tertiary);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-tertiary);
+        }
+
+        /* Utility Classes */
+        .hidden {
+            display: none !important;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border-width: 0;
+        }
+
+        /* Login Screen */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--bg-primary) 0%, #1a1f3a 50%, var(--bg-secondary) 100%);
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-container::before {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
+            opacity: 0.15;
+            top: -300px;
+            right: -300px;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .login-container::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--secondary) 0%, transparent 70%);
+            opacity: 0.1;
+            bottom: -200px;
+            left: -200px;
+            animation: float 25s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            50% {
+                transform: translate(30px, -30px) scale(1.1);
+            }
+        }
+
+        .login-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            width: 100%;
+            max-width: 420px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            z-index: 1;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .login-logo-icon {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: var(--radius-md);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
+        }
+
+        .login-logo h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-logo p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:hover {
+            border-color: var(--bg-tertiary);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border: none;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 16px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: var(--bg-elevated);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-warning {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-info {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--text-secondary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-ghost:hover:not(:disabled) {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .btn-sm {
+            padding: 8px 16px;
+            font-size: 0.875rem;
+        }
+
+        .btn-icon {
+            padding: 8px;
+            width: 36px;
+            height: 36px;
+        }
+
+        .btn-full {
+            width: 100%;
+        }
+
+        /* Layout */
+        .app-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border-subtle);
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            z-index: 100;
+            transition: var(--transition);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .sidebar-logo {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-light) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            background: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-align: left;
+            width: 100%;
+        }
+
+        .nav-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+            color: var(--primary-light);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .nav-item svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer {
+            padding: 16px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .user-card {
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .user-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-role {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .top-header {
+            height: var(--header-height);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 8px;
+            border-radius: var(--radius-md);
+        }
+
+        .menu-toggle:hover {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .page-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            padding: 24px;
+            max-width: 1600px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--border-color);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .stat-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.blue {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        .stat-icon.green {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .stat-icon.orange {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .stat-icon.red {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .stat-icon.purple {
+            background: rgba(139, 92, 246, 0.1);
+            color: var(--secondary);
+        }
+
+        .stat-trend {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: var(--radius-sm);
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        /* Section Card */
+        .section-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .section-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .section-body {
+            padding: 24px;
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 4px;
+            padding: 0 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            background: var(--bg-secondary);
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -1px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+        }
+
+        .tab-btn.active {
+            color: var(--primary-light);
+            border-bottom-color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Table */
+        .table-container {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .data-table thead {
+            background: var(--bg-primary);
+        }
+
+        .data-table th {
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        .data-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            vertical-align: middle;
+        }
+
+        .data-table tbody tr {
+            transition: var(--transition);
+        }
+
+        .data-table tbody tr:hover {
+            background: rgba(99, 102, 241, 0.03);
+        }
+
+        .table-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .media-preview {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background: var(--bg-primary);
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .badge-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+        }
+
+        .badge-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .badge-info {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--info);
+        }
+
+        /* Form Grid */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .form-section {
+            background: var(--bg-primary);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 24px;
+        }
+
+        .form-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--primary-light);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-label-required::after {
+            content: '*';
+            color: var(--danger);
+            margin-left: 4px;
+        }
+
+        .form-input,
+        .form-select,
+        .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .form-input:hover,
+        .form-select:hover,
+        .form-textarea:hover {
+            border-color: var(--bg-tertiary);
+        }
+
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-hint {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            margin-top: 6px;
+        }
+
+        /* File Upload */
+        .file-upload {
+            border: 2px dashed var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 40px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            background: var(--bg-secondary);
+        }
+
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .file-upload.dragover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+        }
+
+        .file-upload input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-icon {
+            width: 48px;
+            height: 48px;
+            color: var(--primary);
+            margin-bottom: 12px;
+        }
+
+        .file-upload-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+        }
+
+        .file-upload-hint {
+            color: var(--text-tertiary);
+            font-size: 0.8rem;
+        }
+
+        .file-preview {
+            margin-top: 16px;
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .file-preview img,
+        .file-preview video {
+            width: 100%;
+            max-height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Toggle Switch */
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-tertiary);
+            transition: var(--transition);
+            border-radius: 26px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: var(--text-primary);
+            transition: var(--transition);
+            border-radius: 50%;
+            box-shadow: var(--shadow-sm);
+        }
+
+        input:checked+.toggle-slider {
+            background: var(--primary);
+        }
+
+        input:checked+.toggle-slider:before {
+            transform: translateX(22px);
+        }
+
+        .toggle-label {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .toggle-hint {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            margin-top: 2px;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            transform: scale(0.95) translateY(20px);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .modal-overlay.show .modal {
+            transform: scale(1) translateY(0);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: var(--bg-secondary);
+            z-index: 10;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: var(--radius-md);
+            transition: var(--transition);
+        }
+
+        .modal-close:hover {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 20px 24px;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            position: sticky;
+            bottom: 0;
+            background: var(--bg-secondary);
+        }
+
+        /* Alert */
+        .alert {
+            padding: 16px 20px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        /* Loading States */
+        .skeleton {
+            background: linear-gradient(90deg, var(--bg-tertiary) 25%, var(--bg-elevated) 50%, var(--bg-tertiary) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: var(--radius-md);
+        }
+
+        @keyframes shimmer {
+            0% {
+                background-position: 200% 0;
+            }
+
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        .empty-state-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        /* Danger Zone */
+        .danger-zone {
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            background: rgba(239, 68, 68, 0.05);
+            border-radius: var(--radius-md);
+            padding: 24px;
+        }
+
+        .danger-zone-title {
+            color: var(--danger);
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                box-shadow: var(--shadow-lg);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .menu-toggle {
+                display: flex;
+            }
+
+            .overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 99;
+                opacity: 0;
+                visibility: hidden;
+                transition: var(--transition);
+            }
+
+            .overlay.show {
+                opacity: 1;
+                visibility: visible;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .content-area {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .stat-card {
+                padding: 16px;
+            }
+
+            .stat-value {
+                font-size: 1.5rem;
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .tabs {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+                padding: 0 16px;
+            }
+
+            .tab-btn {
+                white-space: nowrap;
+            }
+
+            .data-table {
+                font-size: 0.85rem;
+            }
+
+            .data-table th,
+            .data-table td {
+                padding: 12px;
+            }
+
+            .table-actions {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .btn-sm {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+
+            .login-card {
+                padding: 32px 24px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-actions .btn-text {
+                display: none;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.4s ease;
+        }
+
+        .slide-up {
+            animation: slideUp 0.4s ease;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        /* Current Media Display */
+        .current-media {
+            background: var(--bg-primary);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            border: 1px solid var(--border-color);
+        }
+
+        .current-media-label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .current-media-content {
+            border-radius: var(--radius-md);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .current-media-content img,
+        .current-media-content video {
+            width: 100%;
+            max-height: 150px;
+            object-fit: cover;
+            display: block;
+        }
+    </style>
 </head>
 
 <body>
     <!-- Login Screen -->
     <div id="login-screen" class="login-container">
-        <div class="login-box">
-            <h1>Admin Login</h1>
-            <p>Sign in to manage your team building game</p>
+        <div class="login-card">
+            <div class="login-logo">
+                <div class="login-logo-icon">🎮</div>
+                <h1>Admin Console</h1>
+                <p>Sign in to manage your team building game</p>
+            </div>
 
             <form id="login-form">
                 <div class="form-group">
-                    <label for="login-email">Email Address</label>
-                    <input type="email" id="login-email" required>
+                    <label class="form-label" for="login-email">Email Address</label>
+                    <input type="email" id="login-email" class="form-input" placeholder="admin@example.com" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <input type="password" id="login-password" required>
+                    <label class="form-label" for="login-password">Password</label>
+                    <input type="password" id="login-password" class="form-input" placeholder="••••••••" required>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Sign In</button>
+                <button type="submit" class="btn btn-primary btn-full" style="margin-top: 8px;">
+                    <span>Sign In</span>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </button>
             </form>
 
-            <div style="margin-top: 20px; text-align: center;">
-                <a href="index.html" style="color: var(--text-secondary); text-decoration: none;">← Back to Game</a>
+            <div style="margin-top: 24px; text-align: center;">
+                <a href="index.html"
+                    style="color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 6px;">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 12H5M12 19l-7-7 7-7" />
+                    </svg>
+                    Back to Game
+                </a>
             </div>
         </div>
     </div>
 
     <!-- Admin Dashboard -->
-    <div id="admin-dashboard" class="admin-layout hidden">
+    <div id="admin-dashboard" class="app-layout hidden">
+        <!-- Mobile Overlay -->
+        <div class="overlay" id="sidebar-overlay"></div>
+
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <h2>🎮 Game Admin</h2>
-                <p>Manage your content</p>
+                <div class="sidebar-logo">🎮</div>
+                <span class="sidebar-brand">Game Admin</span>
             </div>
 
             <nav class="sidebar-nav">
-                <button class="nav-item active" data-tab="dashboard">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
-                        </path>
+                <button class="nav-item active" data-tab="dashboard" onclick="switchTab('dashboard')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" />
+                        <rect x="14" y="3" width="7" height="7" />
+                        <rect x="14" y="14" width="7" height="7" />
+                        <rect x="3" y="14" width="7" height="7" />
                     </svg>
                     Dashboard
                 </button>
-                <button class="nav-item" data-tab="questions">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
-                        </path>
+                <button class="nav-item" data-tab="questions" onclick="switchTab('questions')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                        <line x1="12" y1="17" x2="12.01" y2="17" />
                     </svg>
                     Questions
                 </button>
-                <button class="nav-item" data-tab="types">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
-                        </path>
+                <button class="nav-item" data-tab="types" onclick="switchTab('types')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                        <line x1="7" y1="7" x2="7.01" y2="7" />
                     </svg>
                     Question Types
                 </button>
-                <button class="nav-item" data-tab="history">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
-                        </path>
+                <button class="nav-item" data-tab="history" onclick="switchTab('history')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
                     </svg>
                     Game History
                 </button>
-                <button class="nav-item" data-tab="settings">
-                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
-                        </path>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                <button class="nav-item" data-tab="settings" onclick="switchTab('settings')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="3" />
+                        <path
+                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                     </svg>
                     Settings
                 </button>
             </nav>
 
             <div class="sidebar-footer">
-                <div class="user-info">
+                <div class="user-card">
                     <div class="user-avatar" id="user-avatar">A</div>
-                    <div class="user-details">
+                    <div class="user-info">
                         <div class="user-name" id="user-email">admin@example.com</div>
                         <div class="user-role">Administrator</div>
                     </div>
                 </div>
-                <button id="logout-btn" class="btn btn-secondary" style="width: 100%;">Logout</button>
+                <button id="logout-btn" class="btn btn-secondary btn-full btn-sm" onclick="handleLogout()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9" />
+                    </svg>
+                    <span>Logout</span>
+                </button>
             </div>
         </aside>
 
         <!-- Main Content -->
         <main class="main-content">
-            <!-- Top Header -->
+            <!-- Header -->
             <header class="top-header">
-                <h1 class="header-title" id="page-title">Dashboard</h1>
+                <div class="header-left">
+                    <button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12" />
+                            <line x1="3" y1="6" x2="21" y2="6" />
+                            <line x1="3" y1="18" x2="21" y2="18" />
+                        </svg>
+                    </button>
+                    <h1 class="page-title" id="page-title">Dashboard</h1>
+                </div>
                 <div class="header-actions">
-                    <a href="index.html" class="btn btn-secondary">View Game</a>
+                    <a href="index.html" class="btn btn-ghost btn-sm">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                            <polyline points="9 22 9 12 15 12 15 22" />
+                        </svg>
+                        <span class="btn-text">View Game</span>
+                    </a>
                 </div>
             </header>
 
-            <!-- Content Area -->
+            <!-- Content -->
             <div class="content-area">
-                <!-- DASHBOARD SECTION -->
-                <div id="dashboard-section" class="section">
-                    <div class="dashboard-grid">
+                <!-- Dashboard Section -->
+                <div id="dashboard-section" class="section-content">
+                    <div class="stats-grid">
                         <div class="stat-card">
-                            <div class="stat-icon blue">❓</div>
+                            <div class="stat-header">
+                                <div class="stat-icon blue">❓</div>
+                                <span class="stat-trend">Total</span>
+                            </div>
                             <div class="stat-value" id="total-questions">0</div>
                             <div class="stat-label">Total Questions</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon green">✓</div>
+                            <div class="stat-header">
+                                <div class="stat-icon green">✓</div>
+                                <span class="stat-trend">Active</span>
+                            </div>
                             <div class="stat-value" id="active-questions">0</div>
                             <div class="stat-label">Active Questions</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon orange">🏷️</div>
+                            <div class="stat-header">
+                                <div class="stat-icon purple">🏷️</div>
+                                <span class="stat-trend">Types</span>
+                            </div>
                             <div class="stat-value" id="question-types-count">0</div>
                             <div class="stat-label">Question Types</div>
                         </div>
                         <div class="stat-card">
-                            <div class="stat-icon red">🎮</div>
+                            <div class="stat-header">
+                                <div class="stat-icon red">🎮</div>
+                                <span class="stat-trend">Plays</span>
+                            </div>
                             <div class="stat-value" id="total-played">0</div>
                             <div class="stat-label">Times Played</div>
                         </div>
                     </div>
 
-                    <div class="section" style="margin-top: 30px;">
+                    <div class="section-card">
                         <div class="section-header">
                             <h2 class="section-title">Quick Actions</h2>
                         </div>
-                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                            <button class="btn btn-primary" onclick="switchTab('questions')">Add New Question</button>
-                            <button class="btn btn-success" onclick="switchTab('types')">Manage Types</button>
-                            <button class="btn btn-warning" onclick="switchTab('settings')">Game Settings</button>
+                        <div class="section-body">
+                            <div class="quick-actions">
+                                <button class="btn btn-primary"
+                                    onclick="switchTab('questions'); switchTabContent('add');">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>
+                                    Add New Question
+                                </button>
+                                <button class="btn btn-success" onclick="switchTab('types')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path
+                                            d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                                        <line x1="7" y1="7" x2="7.01" y2="7" />
+                                    </svg>
+                                    Manage Types
+                                </button>
+                                <button class="btn btn-warning" onclick="switchTab('settings')">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="3" />
+                                        <path
+                                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                                    </svg>
+                                    Game Settings
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- QUESTIONS SECTION -->
-                <div id="questions-section" class="section hidden">
-                    <!-- Tabs -->
-                    <div class="tabs">
-                        <button class="tab-btn active" data-tab="list">All Questions</button>
-                        <button class="tab-btn" data-tab="add">Add Question</button>
-                    </div>
-
-                    <!-- List Tab -->
-                    <div id="list-tab" class="tab-content active">
-                        <div class="table-container" id="questions-table">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Type</th>
-                                        <th>Preview</th>
-                                        <th>Answer</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="questions-tbody">
-                                    <tr>
-                                        <td colspan="6" class="text-center"
-                                            style="padding: 40px; color: var(--text-secondary);">
-                                            Loading questions...
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                <!-- Questions Section -->
+                <div id="questions-section" class="section-content hidden">
+                    <div class="section-card">
+                        <div class="tabs">
+                            <button class="tab-btn active" data-tab="list" onclick="switchTabContent('list')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="8" y1="6" x2="21" y2="6" />
+                                    <line x1="8" y1="12" x2="21" y2="12" />
+                                    <line x1="8" y1="18" x2="21" y2="18" />
+                                    <line x1="3" y1="6" x2="3.01" y2="6" />
+                                    <line x1="3" y1="12" x2="3.01" y2="12" />
+                                    <line x1="3" y1="18" x2="3.01" y2="18" />
+                                </svg>
+                                All Questions
+                            </button>
+                            <button class="tab-btn" data-tab="add" onclick="switchTabContent('add')">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <line x1="12" y1="5" x2="12" y2="19" />
+                                    <line x1="5" y1="12" x2="19" y2="12" />
+                                </svg>
+                                Add New
+                            </button>
                         </div>
-                    </div>
 
-                    <!-- Add Tab -->
-                    <div id="add-tab" class="tab-content">
-                        <form id="add-question-form">
-                            <div class="form-grid">
-                                <div class="form-section">
-                                    <h3>Basic Information</h3>
+                        <div id="list-tab" class="tab-content active">
+                            <div class="section-body">
+                                <div class="table-container" id="questions-table">
+                                    <table class="data-table">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Type</th>
+                                                <th>Preview</th>
+                                                <th>Answer</th>
+                                                <th>Status</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="questions-tbody">
+                                            <tr>
+                                                <td colspan="6" class="empty-state">
+                                                    <div class="empty-state-icon">⏳</div>
+                                                    <div class="empty-state-title">Loading questions...</div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
 
-                                    <div class="form-group">
-                                        <label for="question-number">Question Number *</label>
-                                        <input type="number" id="question-number" name="question-number" min="1"
-                                            max="50" required placeholder="1-50">
-                                    </div>
+                        <div id="add-tab" class="tab-content">
+                            <div class="section-body">
+                                <form id="add-question-form" onsubmit="handleAddQuestion(event)">
+                                    <div class="form-grid">
+                                        <div class="form-section">
+                                            <h3 class="form-section-title">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path
+                                                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                                    <polyline points="14 2 14 8 20 8" />
+                                                    <line x1="16" y1="13" x2="8" y2="13" />
+                                                    <line x1="16" y1="17" x2="8" y2="17" />
+                                                    <polyline points="10 9 9 9 8 9" />
+                                                </svg>
+                                                Basic Information
+                                            </h3>
 
-                                    <div class="form-group">
-                                        <label for="question-type">Question Type *</label>
-                                        <select id="question-type" name="question-type" required>
-                                            <option value="">Select Type</option>
-                                        </select>
-                                    </div>
+                                            <div class="form-group">
+                                                <label class="form-label form-label-required"
+                                                    for="question-number">Question Number</label>
+                                                <input type="number" id="question-number" name="question-number"
+                                                    class="form-input" min="1" max="50" required placeholder="1-50">
+                                            </div>
 
-                                    <div class="form-group">
-                                        <label for="timer-seconds">Timer (seconds)</label>
-                                        <input type="number" id="timer-seconds" name="timer-seconds" min="5" max="60"
-                                            value="10">
-                                    </div>
+                                            <div class="form-group">
+                                                <label class="form-label form-label-required"
+                                                    for="question-type">Question Type</label>
+                                                <select id="question-type" name="question-type" class="form-select"
+                                                    required>
+                                                    <option value="">Select Type</option>
+                                                </select>
+                                            </div>
 
-                                    <div class="form-group">
-                                        <div class="toggle-container">
-                                            <label class="toggle-switch">
-                                                <input type="checkbox" id="is-active" name="is-active" checked>
-                                                <span class="toggle-slider"></span>
-                                            </label>
-                                            <label for="is-active" style="margin: 0;">Active</label>
+                                            <div class="form-group">
+                                                <label class="form-label" for="timer-seconds">Timer (seconds)</label>
+                                                <input type="number" id="timer-seconds" name="timer-seconds"
+                                                    class="form-input" min="5" max="60" value="10">
+                                                <div class="form-hint">Countdown time for answering</div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div class="toggle-wrapper">
+                                                    <label class="toggle-switch">
+                                                        <input type="checkbox" id="is-active" name="is-active" checked>
+                                                        <span class="toggle-slider"></span>
+                                                    </label>
+                                                    <div>
+                                                        <div class="toggle-label">Active</div>
+                                                        <div class="toggle-hint">Show this question in game</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-section">
+                                            <h3 class="form-section-title">
+                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                                    <circle cx="8.5" cy="8.5" r="1.5" />
+                                                    <polyline points="21 15 16 10 5 21" />
+                                                </svg>
+                                                Media Upload
+                                            </h3>
+
+                                            <div class="file-upload"
+                                                onclick="document.getElementById('media-file').click()">
+                                                <input type="file" id="media-file" name="media-file"
+                                                    accept="image/*,video/*" onchange="handleFilePreview(event)">
+                                                <svg class="file-upload-icon" viewBox="0 0 24 24" fill="none"
+                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                    stroke-linejoin="round">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                                    <polyline points="17 8 12 3 7 8" />
+                                                    <line x1="12" y1="3" x2="12" y2="15" />
+                                                </svg>
+                                                <div class="file-upload-text">Click to upload media</div>
+                                                <div class="file-upload-hint">Supports: JPG, PNG, GIF, MP4 (max 10MB)
+                                                </div>
+                                            </div>
+                                            <div id="file-preview" class="file-preview hidden"></div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div class="form-section">
-                                    <h3>Media Upload</h3>
-
-                                    <div class="file-upload">
-                                        <input type="file" id="media-file" name="media-file" accept="image/*,video/*">
-                                        <label for="media-file" class="file-upload-label">
-                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
-                                                </path>
+                                    <div class="form-section" style="margin-top: 24px;">
+                                        <h3 class="form-section-title">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
                                             </svg>
-                                            <div>Click to upload image or video</div>
-                                            <small style="color: var(--text-secondary);">Supports: JPG, PNG, GIF,
-                                                MP4</small>
-                                        </label>
+                                            Question Content
+                                        </h3>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="question-text">Question Text</label>
+                                            <textarea id="question-text" name="question-text" class="form-textarea"
+                                                placeholder="Enter your question here..."></textarea>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label form-label-required" for="answer">Answer</label>
+                                            <input type="text" id="answer" name="answer" class="form-input" required
+                                                placeholder="Enter the correct answer">
+                                        </div>
                                     </div>
-                                    <div id="file-preview"></div>
-                                </div>
+
+                                    <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                                        <button type="reset" class="btn btn-secondary">Clear</button>
+                                        <button type="submit" class="btn btn-primary">
+                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round">
+                                                <path
+                                                    d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                                                <polyline points="17 21 17 13 7 13 7 21" />
+                                                <polyline points="7 3 7 8 15 8" />
+                                            </svg>
+                                            Save Question
+                                        </button>
+                                    </div>
+                                </form>
                             </div>
-
-                            <div class="form-section mt-20">
-                                <h3>Question Content</h3>
-
-                                <div class="form-group">
-                                    <label for="question-text">Question Text</label>
-                                    <textarea id="question-text" name="question-text"
-                                        placeholder="Enter your question here..."></textarea>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="answer">Answer *</label>
-                                    <input type="text" id="answer" name="answer" required
-                                        placeholder="Enter the correct answer">
-                                </div>
-                            </div>
-
-                            <div class="mt-20" style="text-align: right;">
-                                <button type="reset" class="btn btn-secondary">Clear</button>
-                                <button type="submit" class="btn btn-primary">Save Question</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-
-                <!-- QUESTION TYPES SECTION -->
-                <div id="types-section" class="section hidden">
-                    <div class="form-section mb-20">
-                        <h3>Add New Question Type</h3>
-                        <form id="add-type-form"
-                            style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: end;">
-                            <div class="form-group" style="margin: 0;">
-                                <label for="type-name">Type Name</label>
-                                <input type="text" id="type-name" name="type-name" required
-                                    placeholder="e.g., Guess the Song">
-                            </div>
-                            <div class="form-group" style="margin: 0;">
-                                <label for="type-description">Description (Optional)</label>
-                                <input type="text" id="type-description" name="type-description"
-                                    placeholder="Brief description...">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Type</button>
-                        </form>
-                    </div>
-
-                    <div class="table-container">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Type Name</th>
-                                    <th>Description</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="types-tbody">
-                                <tr>
-                                    <td colspan="3" class="text-center"
-                                        style="padding: 40px; color: var(--text-secondary);">
-                                        Loading types...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <!-- SETTINGS SECTION -->
-                <div id="settings-section" class="section hidden">
-                    <div class="form-section">
-                        <h3>Game Configuration</h3>
-
-                        <div class="form-group">
-                            <label for="default-timer">Default Timer (seconds)</label>
-                            <input type="number" id="default-timer" min="5" max="60" value="10">
-                            <small style="color: var(--text-secondary);">Default countdown time for new
-                                questions</small>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="allow-repeats" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                                <div>
-                                    <div style="font-weight: 600;">Allow Question Repeats</div>
-                                    <small style="color: var(--text-secondary);">Allow questions to be shown multiple
-                                        times per session</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="shuffle-mode">
-                                    <span class="toggle-slider"></span>
-                                </label>
-                                <div>
-                                    <div style="font-weight: 600;">Shuffle Mode</div>
-                                    <small style="color: var(--text-secondary);">Randomize question order instead of
-                                        using spinner</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <div class="toggle-container">
-                                <label class="toggle-switch">
-                                    <input type="checkbox" id="sound-effects" checked>
-                                    <span class="toggle-slider"></span>
-                                </label>
-                                <div>
-                                    <div style="font-weight: 600;">Enable Sound Effects</div>
-                                    <small style="color: var(--text-secondary);">Play sounds during game events</small>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div style="text-align: right; margin-top: 20px;">
-                            <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
-                        </div>
-                    </div>
-
-                    <div class="form-section mt-20">
-                        <h3>Custom Settings</h3>
-                        <form id="add-setting-form"
-                            style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: end; margin-bottom: 20px;">
-                            <div class="form-group" style="margin: 0;">
-                                <label for="setting-key">Setting Key</label>
-                                <input type="text" id="setting-key" name="setting-key" required
-                                    placeholder="e.g., max_players">
-                            </div>
-                            <div class="form-group" style="margin: 0;">
-                                <label for="setting-value">Setting Value</label>
-                                <input type="text" id="setting-value" name="setting-value" required
-                                    placeholder="e.g., 10">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Add Setting</button>
-                        </form>
-
-                        <div class="table-container">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th>Setting Key</th>
-                                        <th>Setting Value</th>
-                                        <th>Last Updated</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="settings-tbody">
-                                    <tr>
-                                        <td colspan="3" class="text-center"
-                                            style="padding: 40px; color: var(--text-secondary);">
-                                            Loading settings...
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div class="form-section mt-20">
-                        <h3 style="color: var(--danger);">Danger Zone</h3>
-                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                            <button class="btn btn-danger" onclick="clearAllData()">Clear All Questions</button>
-                            <button class="btn btn-warning" onclick="resetStats()">Reset Statistics</button>
                         </div>
                     </div>
                 </div>
 
-                <!-- GAME HISTORY SECTION -->
-                <div id="history-section" class="section hidden">
-                    <div class="section-header" style="margin-bottom: 20px;">
-                        <h2 class="section-title">Game Play History</h2>
-                        <p style="color: var(--text-secondary); margin-top: 5px;">View all recorded game sessions and
-                            player activities</p>
+                <!-- Types Section -->
+                <div id="types-section" class="section-content hidden">
+                    <div class="section-card" style="margin-bottom: 24px;">
+                        <div class="section-header">
+                            <h2 class="section-title">Add New Question Type</h2>
+                        </div>
+                        <div class="section-body">
+                            <form id="add-type-form" onsubmit="handleAddQuestionType(event)"
+                                style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: end;">
+                                <div class="form-group" style="margin: 0;">
+                                    <label class="form-label form-label-required" for="type-name">Type Name</label>
+                                    <input type="text" id="type-name" name="type-name" class="form-input" required
+                                        placeholder="e.g., Guess the Song">
+                                </div>
+                                <div class="form-group" style="margin: 0;">
+                                    <label class="form-label" for="type-description">Description</label>
+                                    <input type="text" id="type-description" name="type-description" class="form-input"
+                                        placeholder="Brief description...">
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="12" y1="5" x2="12" y2="19" />
+                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                    </svg>
+                                    Add Type
+                                </button>
+                            </form>
+                        </div>
                     </div>
 
-                    <div class="table-container" id="history-table">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Player Name</th>
-                                    <th>Question #</th>
-                                    <th>Session ID</th>
-                                    <th>Played At</th>
-                                    <th>Question Preview</th>
-                                </tr>
-                            </thead>
-                            <tbody id="history-tbody">
-                                <tr>
-                                    <td colspan="5" class="text-center"
-                                        style="padding: 40px; color: var(--text-secondary);">
-                                        Loading game history...
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="section-card">
+                        <div class="section-header">
+                            <h2 class="section-title">Question Types</h2>
+                        </div>
+                        <div class="section-body">
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Type Name</th>
+                                            <th>Description</th>
+                                            <th style="width: 100px;">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="types-tbody">
+                                        <tr>
+                                            <td colspan="3" class="empty-state">
+                                                <div class="empty-state-icon">⏳</div>
+                                                <div class="empty-state-title">Loading types...</div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Settings Section -->
+                <div id="settings-section" class="section-content hidden">
+                    <div class="section-card">
+                        <div class="section-header">
+                            <h2 class="section-title">Game Settings</h2>
+                        </div>
+                        <div class="section-body">
+                            <form id="add-setting-form" onsubmit="handleGameSetting(event)"
+                                style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: end; margin-bottom: 24px;">
+                                <div class="form-group" style="margin: 0;">
+                                    <label class="form-label form-label-required">Setting Key</label>
+                                    <input type="text" name="setting-key" class="form-input" required
+                                        placeholder="e.g., max_timer">
+                                </div>
+                                <div class="form-group" style="margin: 0;">
+                                    <label class="form-label form-label-required">Setting Value</label>
+                                    <input type="text" name="setting-value" class="form-input" required
+                                        placeholder="e.g., 30">
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Setting</button>
+                            </form>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Setting Key</th>
+                                            <th>Value</th>
+                                            <th>Last Updated</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="settings-tbody">
+                                        <tr>
+                                            <td colspan="3" class="empty-state">Loading...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- History Section -->
+                <div id="history-section" class="section-content hidden">
+                    <div class="section-card">
+                        <div class="section-header">
+                            <h2 class="section-title">Game History</h2>
+                        </div>
+                        <div class="section-body">
+                            <div class="table-container" id="history-table">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Player</th>
+                                            <th>Question #</th>
+                                            <th>Session</th>
+                                            <th>Played At</th>
+                                            <th>Question Preview</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="history-tbody">
+                                        <tr>
+                                            <td colspan="5" class="empty-state">Loading...</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
     </div>
-
-    <!-- Edit Question Modal -->
-    <div id="edit-modal" class="modal-overlay">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 class="modal-title">Edit Question</h2>
-                <button class="modal-close">&times;</button>
-            </div>
-            <div class="modal-body">
-                <form id="edit-question-form">
-                    <input type="hidden" id="edit-question-id" name="question-id">
-
-                    <div class="form-group">
-                        <label for="edit-question-number">Question Number</label>
-                        <input type="number" id="edit-question-number" name="question-number" min="1" max="50" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="edit-question-type">Question Type</label>
-                        <select id="edit-question-type" name="question-type" required>
-                            <option value="">Select Type</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Current Media</label>
-                        <div id="current-media" style="margin-top: 10px;"></div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="edit-media-file">Upload New Media (optional)</label>
-                        <input type="file" id="edit-media-file" name="media-file" accept="image/*,video/*"
-                            style="margin-top: 8px;">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="edit-question-text">Question Text</label>
-                        <textarea id="edit-question-text" name="question-text" required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="edit-answer">Answer</label>
-                        <input type="text" id="edit-answer" name="answer" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="edit-timer-seconds">Timer (seconds)</label>
-                        <input type="number" id="edit-timer-seconds" name="timer-seconds" min="5" max="60" value="10">
-                    </div>
-
-                    <div class="form-group">
-                        <div class="toggle-container">
-                            <label class="toggle-switch">
-                                <input type="checkbox" id="edit-is-active" name="is-active">
-                                <span class="toggle-slider"></span>
-                            </label>
-                            <label for="edit-is-active" style="margin: 0;">Active</label>
-                        </div>
-                    </div>
-
-                    <div class="modal-footer" style="padding: 20px 0 0 0; border: none;">
-                        <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Update Question</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- Scripts -->
-    <script src="supabase.js"></script>
-    <script src="admin.js"></script>
 </body>
+<script src="admin.js"></script>
 
 </html>
