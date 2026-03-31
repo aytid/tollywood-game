@@ -28,11 +28,6 @@ function setupEventListeners() {
         logoutBtn.addEventListener('click', handleLogout);
     }
 
-    // Navigation
-    document.querySelectorAll('.nav-item').forEach(item => {
-        item.addEventListener('click', () => switchTab(item.dataset.tab));
-    });
-
     // Tab buttons
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => switchTabContent(btn.dataset.tab));
@@ -219,6 +214,7 @@ function switchTab(tabName) {
     }
 
     adminState.currentTab = tabName;
+    updateMobileNavActiveState(tabName);
 }
 
 // Switch Tab Content (for sub-tabs)
@@ -307,21 +303,12 @@ async function loadQuestions() {
         adminState.questions = data || [];
         renderQuestionsTable(data);
 
-        // Auto-populate next question number
-        if (data && data.length > 0) {
-            const maxQuestionNumber = Math.max(...data.map(q => q.question_number));
-            const nextNumber = maxQuestionNumber + 1;
-            const questionNumberInput = document.getElementById('question-number');
-            if (questionNumberInput) {
-                questionNumberInput.value = nextNumber;
-                questionNumberInput.placeholder = `Next: ${nextNumber}`;
-            }
-        } else {
-            const questionNumberInput = document.getElementById('question-number');
-            if (questionNumberInput) {
-                questionNumberInput.value = 1;
-                questionNumberInput.placeholder = 'Next: 1';
-            }
+        // Auto-populate next question number based on count (since we maintain sequential numbering)
+        const nextNumber = (data?.length || 0) + 1;
+        const questionNumberInput = document.getElementById('question-number');
+        if (questionNumberInput) {
+            questionNumberInput.value = nextNumber;
+            questionNumberInput.placeholder = `Next: ${nextNumber}`;
         }
 
     } catch (error) {
@@ -411,7 +398,6 @@ function renderQuestionTypes(types) {
     tbody.innerHTML = types.map(t => `
         <tr>
             <td>${t.type_name}</td>
-            <td style="max-width: 300px;">${t.description || 'N/A'}</td>
             <td>
                 <button class="btn btn-sm btn-danger" onclick="deleteQuestionType('${t.id}')">Delete</button>
             </td>
@@ -453,7 +439,7 @@ async function handleAddQuestion(e) {
     const formData = new FormData(e.target);
     const submitBtn = e.target.querySelector('button[type="submit"]');
 
-    const questionNumber = parseInt(formData.get('question-number'));
+    let questionNumber = parseInt(formData.get('question-number'));
     if (!questionNumber || questionNumber < 1) {
         showAlert('Please enter a valid question number', 'error');
         return;
@@ -468,6 +454,29 @@ async function handleAddQuestion(e) {
     submitBtn.disabled = true;
 
     try {
+        // Check if question number already exists
+        const { data: existingQuestions, error: checkError } = await supabase
+            .from('questions')
+            .select('id, question_number')
+            .order('question_number', { ascending: true });
+
+        if (checkError) throw checkError;
+
+        // Check for duplicate question number
+        const duplicate = existingQuestions?.find(q => q.question_number === questionNumber);
+
+        if (duplicate) {
+            // Find the next available question number
+            const usedNumbers = new Set(existingQuestions.map(q => q.question_number));
+            let nextNumber = 1;
+            while (usedNumbers.has(nextNumber)) {
+                nextNumber++;
+            }
+
+            showAlert(`Question #${questionNumber} already exists. Using next available number: ${nextNumber}`, 'warning');
+            questionNumber = nextNumber;
+        }
+
         // Upload media if provided
         let mediaUrl = null;
         let mediaType = null;
@@ -685,6 +694,18 @@ async function deleteQuestion(id) {
     if (!confirm('Are you sure you want to delete this question?')) return;
 
     try {
+        // First, get the question being deleted to know its number
+        const { data: questionToDelete, error: fetchError } = await supabase
+            .from('questions')
+            .select('question_number')
+            .eq('id', id)
+            .single();
+
+        if (fetchError) throw fetchError;
+
+        const deletedNumber = questionToDelete.question_number;
+
+        // Delete the question
         const { error } = await supabase
             .from('questions')
             .delete()
@@ -692,7 +713,36 @@ async function deleteQuestion(id) {
 
         if (error) throw error;
 
-        showAlert('Question deleted successfully!', 'success');
+        // Now resequence remaining questions to fill the gap
+        // Get all remaining questions ordered by their current question_number
+        const { data: remainingQuestions, error: fetchAllError } = await supabase
+            .from('questions')
+            .select('id, question_number')
+            .order('question_number', { ascending: true });
+
+        if (fetchAllError) throw fetchAllError;
+
+        if (remainingQuestions && remainingQuestions.length > 0) {
+            // Resequence questions from 1 to N
+            const updates = remainingQuestions.map((q, index) => ({
+                id: q.id,
+                question_number: index + 1
+            }));
+
+            // Update each question with its new number
+            for (const update of updates) {
+                const { error: updateError } = await supabase
+                    .from('questions')
+                    .update({ question_number: update.question_number })
+                    .eq('id', update.id);
+
+                if (updateError) {
+                    console.error('Error updating question number:', updateError);
+                }
+            }
+        }
+
+        showAlert(`Question deleted and remaining questions renumbered from 1 to ${remainingQuestions?.length || 0}!`, 'success');
         loadQuestions();
 
     } catch (error) {
@@ -871,7 +921,6 @@ function renderGameHistory(history) {
             <td>#${h.question_number}</td>
             <td><small style="color: var(--text-secondary);">${h.session_id.substring(0, 12)}...</small></td>
             <td>${new Date(h.played_at).toLocaleString()}</td>
-            <td><small style="color: var(--text-secondary);">${h.questions?.question_text?.substring(0, 30) || 'N/A'}...</small></td>
         </tr>
     `).join('');
 }
@@ -919,6 +968,44 @@ document.addEventListener('click', (e) => {
     }
 });
 
+
+// Mobile Profile Menu Functions
+function toggleMobileProfileMenu(event) {
+    event.stopPropagation();
+    const dropdown = document.getElementById('mobile-profile-dropdown');
+    dropdown.classList.toggle('show');
+}
+
+function closeMobileProfileMenu() {
+    const dropdown = document.getElementById('mobile-profile-dropdown');
+    if (dropdown) {
+        dropdown.classList.remove('show');
+    }
+}
+
+function showUserProfile() {
+    closeMobileProfileMenu();
+    showAlert('Profile: ' + (adminState.currentUser?.email || 'Admin'), 'info');
+}
+
+// Close mobile profile menu when clicking outside
+document.addEventListener('click', (e) => {
+    const profileMenu = document.querySelector('.mobile-profile-menu');
+    if (profileMenu && !profileMenu.contains(e.target)) {
+        closeMobileProfileMenu();
+    }
+});
+
+// Update mobile bottom nav active state
+function updateMobileNavActiveState(tabName) {
+    document.querySelectorAll('.mobile-bottom-nav .nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.tab === tabName) {
+            item.classList.add('active');
+        }
+    });
+}
+
 // Export functions for global access
 window.switchTab = switchTab;
 window.switchTabContent = switchTabContent;
@@ -928,6 +1015,10 @@ window.deleteQuestionType = deleteQuestionType;
 window.openModal = openModal;
 window.closeModal = closeModal;
 window.loadGameHistory = loadGameHistory;
+window.toggleMobileProfileMenu = toggleMobileProfileMenu;
+window.closeMobileProfileMenu = closeMobileProfileMenu;
+window.showUserProfile = showUserProfile;
+window.toggleSidebar = toggleSidebar;
 
 function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');

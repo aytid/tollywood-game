@@ -91,7 +91,7 @@ function initializeSupabase() {
 }
 
 async function spinRandomQuestion() {
-    
+
     // playSound("next-question");
     const spinBtn = document.getElementById('spin-btn');
     spinBtn.disabled = true;
@@ -193,8 +193,13 @@ function showQuestion() {
     showScreen('question');
     updateQuestionScreen(gameState.currentQuestion);
 
-    // START TIMER AUTOMATICALLY
-    startTimer();
+    const typeName = gameState.currentQuestion.question_types?.type_name || "";
+
+    if (typeName !== "Watch & Answer") {
+        startTimer();
+    } else {
+        document.querySelector(".timer-container").style.display = "none";
+    }
 }
 
 // Update Question Screen
@@ -516,14 +521,14 @@ function fireConfetti() {
 // Sound Effects (placeholder - implement with actual audio files)
 function playSound(type) {
 
-const soundFiles = {
-    spin: "spin.mp3",
-    tick: "tick.mp3",
-    "next-question": "next-question.mp3",
-    "tick-fast": "tick-fast.mp3",
-    "times-up": "times-up.mp3",
-    success: "success.mp3"
-};
+    const soundFiles = {
+        spin: "spin.mp3",
+        tick: "tick.mp3",
+        "next-question": "next-question.mp3",
+        "tick-fast": "tick-fast.mp3",
+        "times-up": "times-up.mp3",
+        success: "success.mp3"
+    };
 
     const file = soundFiles[type];
     if (!file) return;
@@ -613,12 +618,12 @@ async function playNextQuestion() {
 
     await spinRandomQuestion();
 }
-function stopAllSounds(){
-    Object.values(sounds).forEach(sound=>{
+function stopAllSounds() {
+    Object.values(sounds).forEach(sound => {
         sound.pause();
         sound.currentTime = 0;
     });
 }
-function closeAnswerOverlay(){
+function closeAnswerOverlay() {
     document.getElementById("answer-overlay").classList.remove("show");
 }

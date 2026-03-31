@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title>Admin Console | Team Building Game</title>
     <meta name="theme-color" content="#0f172a">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -64,7 +64,6 @@
         <!-- Sidebar -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="sidebar-logo">🎮</div>
                 <span class="sidebar-brand">Game Admin</span>
             </div>
 
@@ -107,15 +106,6 @@
                     </svg>
                     Game History
                 </button>
-                <button class="nav-item" data-tab="settings" onclick="switchTab('settings')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="3" />
-                        <path
-                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                    </svg>
-                    Settings
-                </button>
             </nav>
 
             <div class="sidebar-footer">
@@ -141,488 +131,448 @@
             <!-- Header -->
             <header class="top-header">
                 <div class="header-left">
-                    <button class="menu-toggle" id="menu-toggle" onclick="toggleSidebar()">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="3" y1="12" x2="21" y2="12" />
-                            <line x1="3" y1="6" x2="21" y2="6" />
-                            <line x1="3" y1="18" x2="21" y2="18" />
-                        </svg>
-                    </button>
                     <h1 class="page-title" id="page-title">Dashboard</h1>
                 </div>
-                <div class="header-actions">
-                    <a href="index.html" class="btn btn-ghost btn-sm">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                <a href="index.html" class="btn btn-ghost btn-sm">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg>
+                </a>
+    </header>
+
+    <!-- Content -->
+    <div class="content-area">
+        <!-- Dashboard Section -->
+        <div id="dashboard-section" class="section-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon blue">❓</div>
+                        <span class="stat-trend">Total</span>
+                    </div>
+                    <div class="stat-value" id="total-questions">0</div>
+                    <div class="stat-label">Total Questions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon green">✓</div>
+                        <span class="stat-trend">Active</span>
+                    </div>
+                    <div class="stat-value" id="active-questions">0</div>
+                    <div class="stat-label">Active Questions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon purple">🏷️</div>
+                        <span class="stat-trend">Types</span>
+                    </div>
+                    <div class="stat-value" id="question-types-count">0</div>
+                    <div class="stat-label">Question Types</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div class="stat-icon red">🎮</div>
+                        <span class="stat-trend">Plays</span>
+                    </div>
+                    <div class="stat-value" id="total-played">0</div>
+                    <div class="stat-label">Times Played</div>
+                </div>
+            </div>
+
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">Quick Actions</h2>
+                </div>
+                <div class="section-body">
+                    <div class="quick-actions">
+                        <button class="btn btn-primary" onclick="switchTab('questions'); switchTabContent('add');">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            Add New Question
+                        </button>
+                        <button class="btn btn-success" onclick="switchTab('types')">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                                <line x1="7" y1="7" x2="7.01" y2="7" />
+                            </svg>
+                            Manage Types
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Questions Section -->
+        <div id="questions-section" class="section-content hidden">
+            <div class="section-card">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="list" onclick="switchTabContent('list')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                            <polyline points="9 22 9 12 15 12 15 22" />
+                            <line x1="8" y1="6" x2="21" y2="6" />
+                            <line x1="8" y1="12" x2="21" y2="12" />
+                            <line x1="8" y1="18" x2="21" y2="18" />
+                            <line x1="3" y1="6" x2="3.01" y2="6" />
+                            <line x1="3" y1="12" x2="3.01" y2="12" />
+                            <line x1="3" y1="18" x2="3.01" y2="18" />
                         </svg>
-                        <span class="btn-text">View Game</span>
-                    </a>
+                        All Questions
+                    </button>
+                    <button class="tab-btn" data-tab="add" onclick="switchTabContent('add')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        Add New
+                    </button>
                 </div>
-            </header>
 
-            <!-- Content -->
-            <div class="content-area">
-                <!-- Dashboard Section -->
-                <div id="dashboard-section" class="section-content">
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-header">
-                                <div class="stat-icon blue">❓</div>
-                                <span class="stat-trend">Total</span>
-                            </div>
-                            <div class="stat-value" id="total-questions">0</div>
-                            <div class="stat-label">Total Questions</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-header">
-                                <div class="stat-icon green">✓</div>
-                                <span class="stat-trend">Active</span>
-                            </div>
-                            <div class="stat-value" id="active-questions">0</div>
-                            <div class="stat-label">Active Questions</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-header">
-                                <div class="stat-icon purple">🏷️</div>
-                                <span class="stat-trend">Types</span>
-                            </div>
-                            <div class="stat-value" id="question-types-count">0</div>
-                            <div class="stat-label">Question Types</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-header">
-                                <div class="stat-icon red">🎮</div>
-                                <span class="stat-trend">Plays</span>
-                            </div>
-                            <div class="stat-value" id="total-played">0</div>
-                            <div class="stat-label">Times Played</div>
-                        </div>
-                    </div>
-
-                    <div class="section-card">
-                        <div class="section-header">
-                            <h2 class="section-title">Quick Actions</h2>
-                        </div>
-                        <div class="section-body">
-                            <div class="quick-actions">
-                                <button class="btn btn-primary"
-                                    onclick="switchTab('questions'); switchTabContent('add');">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19" />
-                                        <line x1="5" y1="12" x2="19" y2="12" />
-                                    </svg>
-                                    Add New Question
-                                </button>
-                                <button class="btn btn-success" onclick="switchTab('types')">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path
-                                            d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-                                        <line x1="7" y1="7" x2="7.01" y2="7" />
-                                    </svg>
-                                    Manage Types
-                                </button>
-                                <button class="btn btn-warning" onclick="switchTab('settings')">
-                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="3" />
-                                        <path
-                                            d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-                                    </svg>
-                                    Game Settings
-                                </button>
-                            </div>
+                <div id="list-tab" class="tab-content active">
+                    <div class="section-body">
+                        <div class="table-container" id="questions-table">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Type</th>
+                                        <th>Preview</th>
+                                        <th>Answer</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="questions-tbody">
+                                    <tr>
+                                        <td colspan="6" class="empty-state">
+                                            <div class="empty-state-icon">⏳</div>
+                                            <div class="empty-state-title">Loading questions...</div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
 
-                <!-- Questions Section -->
-                <div id="questions-section" class="section-content hidden">
-                    <div class="section-card">
-                        <div class="tabs">
-                            <button class="tab-btn active" data-tab="list" onclick="switchTabContent('list')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="8" y1="6" x2="21" y2="6" />
-                                    <line x1="8" y1="12" x2="21" y2="12" />
-                                    <line x1="8" y1="18" x2="21" y2="18" />
-                                    <line x1="3" y1="6" x2="3.01" y2="6" />
-                                    <line x1="3" y1="12" x2="3.01" y2="12" />
-                                    <line x1="3" y1="18" x2="3.01" y2="18" />
-                                </svg>
-                                All Questions
-                            </button>
-                            <button class="tab-btn" data-tab="add" onclick="switchTabContent('add')">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <line x1="12" y1="5" x2="12" y2="19" />
-                                    <line x1="5" y1="12" x2="19" y2="12" />
-                                </svg>
-                                Add New
-                            </button>
-                        </div>
+                <div id="add-tab" class="tab-content">
+                    <div class="section-body">
+                        <form id="add-question-form" onsubmit="handleAddQuestion(event)">
+                            <div class="form-grid">
+                                <div class="form-section">
+                                    <h3 class="form-section-title">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                            <polyline points="14 2 14 8 20 8" />
+                                            <line x1="16" y1="13" x2="8" y2="13" />
+                                            <line x1="16" y1="17" x2="8" y2="17" />
+                                            <polyline points="10 9 9 9 8 9" />
+                                        </svg>
+                                        Basic Information
+                                    </h3>
 
-                        <div id="list-tab" class="tab-content active">
-                            <div class="section-body">
-                                <div class="table-container" id="questions-table">
-                                    <table class="data-table">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Type</th>
-                                                <th>Preview</th>
-                                                <th>Answer</th>
-                                                <th>Status</th>
-                                                <th>Actions</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody id="questions-tbody">
-                                            <tr>
-                                                <td colspan="6" class="empty-state">
-                                                    <div class="empty-state-icon">⏳</div>
-                                                    <div class="empty-state-title">Loading questions...</div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="form-group">
+                                        <label class="form-label form-label-required" for="question-number">Question
+                                            Number</label>
+                                        <input type="number" id="question-number" name="question-number"
+                                            class="form-input" min="1" max="50" required placeholder="1-50">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label form-label-required" for="question-type">Question
+                                            Type</label>
+                                        <select id="question-type" name="question-type" class="form-select" required>
+                                            <option value="">Select Type</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="timer-seconds">Timer (seconds)</label>
+                                        <input type="number" id="timer-seconds" name="timer-seconds" class="form-input"
+                                            min="5" max="60" value="10">
+                                        <div class="form-hint">Countdown time for answering</div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="toggle-wrapper">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="is-active" name="is-active" checked>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                            <div>
+                                                <div class="toggle-label">Active</div>
+                                                <div class="toggle-hint">Show this question in game</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <h3 class="form-section-title">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+                                            <circle cx="8.5" cy="8.5" r="1.5" />
+                                            <polyline points="21 15 16 10 5 21" />
+                                        </svg>
+                                        Media Upload
+                                    </h3>
+
+                                    <div class="file-upload" onclick="document.getElementById('media-file').click()">
+                                        <input type="file" id="media-file" name="media-file" accept="image/*,video/*"
+                                            onchange="handleFilePreview(event)">
+                                        <svg class="file-upload-icon" viewBox="0 0 24 24" fill="none"
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                            <polyline points="17 8 12 3 7 8" />
+                                            <line x1="12" y1="3" x2="12" y2="15" />
+                                        </svg>
+                                        <div class="file-upload-text">Click to upload media</div>
+                                        <div class="file-upload-hint">Supports: JPG, PNG, GIF, MP4 (max 10MB)
+                                        </div>
+                                    </div>
+                                    <div id="file-preview" class="file-preview hidden"></div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div id="add-tab" class="tab-content">
-                            <div class="section-body">
-                                <form id="add-question-form" onsubmit="handleAddQuestion(event)">
-                                    <div class="form-grid">
-                                        <div class="form-section">
-                                            <h3 class="form-section-title">
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path
-                                                        d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                                    <polyline points="14 2 14 8 20 8" />
-                                                    <line x1="16" y1="13" x2="8" y2="13" />
-                                                    <line x1="16" y1="17" x2="8" y2="17" />
-                                                    <polyline points="10 9 9 9 8 9" />
-                                                </svg>
-                                                Basic Information
-                                            </h3>
+                            <div class="form-section" style="margin-top: 24px;">
+                                <h3 class="form-section-title">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                                    </svg>
+                                    Question Content
+                                </h3>
 
-                                            <div class="form-group">
-                                                <label class="form-label form-label-required"
-                                                    for="question-number">Question Number</label>
-                                                <input type="number" id="question-number" name="question-number"
-                                                    class="form-input" min="1" max="50" required placeholder="1-50">
-                                            </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="question-text">Question Text</label>
+                                    <textarea id="question-text" name="question-text" class="form-textarea"
+                                        placeholder="Enter your question here..."></textarea>
+                                </div>
 
-                                            <div class="form-group">
-                                                <label class="form-label form-label-required"
-                                                    for="question-type">Question Type</label>
-                                                <select id="question-type" name="question-type" class="form-select"
-                                                    required>
-                                                    <option value="">Select Type</option>
-                                                </select>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <label class="form-label" for="timer-seconds">Timer (seconds)</label>
-                                                <input type="number" id="timer-seconds" name="timer-seconds"
-                                                    class="form-input" min="5" max="60" value="10">
-                                                <div class="form-hint">Countdown time for answering</div>
-                                            </div>
-
-                                            <div class="form-group">
-                                                <div class="toggle-wrapper">
-                                                    <label class="toggle-switch">
-                                                        <input type="checkbox" id="is-active" name="is-active" checked>
-                                                        <span class="toggle-slider"></span>
-                                                    </label>
-                                                    <div>
-                                                        <div class="toggle-label">Active</div>
-                                                        <div class="toggle-hint">Show this question in game</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="form-section">
-                                            <h3 class="form-section-title">
-                                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
-                                                    <circle cx="8.5" cy="8.5" r="1.5" />
-                                                    <polyline points="21 15 16 10 5 21" />
-                                                </svg>
-                                                Media Upload
-                                            </h3>
-
-                                            <div class="file-upload"
-                                                onclick="document.getElementById('media-file').click()">
-                                                <input type="file" id="media-file" name="media-file"
-                                                    accept="image/*,video/*" onchange="handleFilePreview(event)">
-                                                <svg class="file-upload-icon" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                                                    <polyline points="17 8 12 3 7 8" />
-                                                    <line x1="12" y1="3" x2="12" y2="15" />
-                                                </svg>
-                                                <div class="file-upload-text">Click to upload media</div>
-                                                <div class="file-upload-hint">Supports: JPG, PNG, GIF, MP4 (max 10MB)
-                                                </div>
-                                            </div>
-                                            <div id="file-preview" class="file-preview hidden"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="form-section" style="margin-top: 24px;">
-                                        <h3 class="form-section-title">
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                                                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                                            </svg>
-                                            Question Content
-                                        </h3>
-
-                                        <div class="form-group">
-                                            <label class="form-label" for="question-text">Question Text</label>
-                                            <textarea id="question-text" name="question-text" class="form-textarea"
-                                                placeholder="Enter your question here..."></textarea>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <label class="form-label form-label-required" for="answer">Answer</label>
-                                            <input type="text" id="answer" name="answer" class="form-input" required
-                                                placeholder="Enter the correct answer">
-                                        </div>
-                                    </div>
-
-                                    <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
-                                        <button type="reset" class="btn btn-secondary">Clear</button>
-                                        <button type="submit" class="btn btn-primary">
-                                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
-                                                stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <path
-                                                    d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-                                                <polyline points="17 21 17 13 7 13 7 21" />
-                                                <polyline points="7 3 7 8 15 8" />
-                                            </svg>
-                                            Save Question
-                                        </button>
-                                    </div>
-                                </form>
+                                <div class="form-group">
+                                    <label class="form-label form-label-required" for="answer">Answer</label>
+                                    <input type="text" id="answer" name="answer" class="form-input" required
+                                        placeholder="Enter the correct answer">
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Types Section -->
-                <div id="types-section" class="section-content hidden">
-                    <div class="section-card" style="margin-bottom: 24px;">
-                        <div class="section-header">
-                            <h2 class="section-title">Add New Question Type</h2>
-                        </div>
-                        <div class="section-body">
-                            <form id="add-type-form" onsubmit="handleAddQuestionType(event)"
-                                style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: end;">
-                                <div class="form-group" style="margin: 0;">
-                                    <label class="form-label form-label-required" for="type-name">Type Name</label>
-                                    <input type="text" id="type-name" name="type-name" class="form-input" required
-                                        placeholder="e.g., Guess the Song">
-                                </div>
-                                <div class="form-group" style="margin: 0;">
-                                    <label class="form-label" for="type-description">Description</label>
-                                    <input type="text" id="type-description" name="type-description" class="form-input"
-                                        placeholder="Brief description...">
-                                </div>
+                            <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px;">
+                                <button type="reset" class="btn btn-secondary">Clear</button>
                                 <button type="submit" class="btn btn-primary">
                                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="12" y1="5" x2="12" y2="19" />
-                                        <line x1="5" y1="12" x2="19" y2="12" />
+                                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                                        <polyline points="17 21 17 13 7 13 7 21" />
+                                        <polyline points="7 3 7 8 15 8" />
                                     </svg>
-                                    Add Type
+                                    Save Question
                                 </button>
-                            </form>
-                        </div>
-                    </div>
-
-                    <div class="section-card">
-                        <div class="section-header">
-                            <h2 class="section-title">Question Types</h2>
-                        </div>
-                        <div class="section-body">
-                            <div class="table-container">
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Type Name</th>
-                                            <th>Description</th>
-                                            <th style="width: 100px;">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="types-tbody">
-                                        <tr>
-                                            <td colspan="3" class="empty-state">
-                                                <div class="empty-state-icon">⏳</div>
-                                                <div class="empty-state-title">Loading types...</div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Settings Section -->
-                <div id="settings-section" class="section-content hidden">
-                    <div class="section-card">
-                        <div class="section-header">
-                            <h2 class="section-title">Game Settings</h2>
-                        </div>
-                        <div class="section-body">
-                            <form id="add-setting-form" onsubmit="handleGameSetting(event)"
-                                style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: end; margin-bottom: 24px;">
-                                <div class="form-group" style="margin: 0;">
-                                    <label class="form-label form-label-required">Setting Key</label>
-                                    <input type="text" name="setting-key" class="form-input" required
-                                        placeholder="e.g., max_timer">
-                                </div>
-                                <div class="form-group" style="margin: 0;">
-                                    <label class="form-label form-label-required">Setting Value</label>
-                                    <input type="text" name="setting-value" class="form-input" required
-                                        placeholder="e.g., 30">
-                                </div>
-                                <button type="submit" class="btn btn-primary">Save Setting</button>
-                            </form>
-                            <div class="table-container">
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Setting Key</th>
-                                            <th>Value</th>
-                                            <th>Last Updated</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="settings-tbody">
-                                        <tr>
-                                            <td colspan="3" class="empty-state">Loading...</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- History Section -->
-                <div id="history-section" class="section-content hidden">
-                    <div class="section-card">
-                        <div class="section-header">
-                            <h2 class="section-title">Game History</h2>
-                        </div>
-                        <div class="section-body">
-                            <div class="table-container" id="history-table">
-                                <table class="data-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Player</th>
-                                            <th>Question #</th>
-                                            <th>Session</th>
-                                            <th>Played At</th>
-                                            <th>Question Preview</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="history-tbody">
-                                        <tr>
-                                            <td colspan="5" class="empty-state">Loading...</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
             </div>
-        </main>
-    </div>
-    <!-- Edit Question Modal -->
-
-    <!-- Edit Question Modal -->
-<div id="edit-modal" class="modal-overlay">
-    <div class="modal-card">
-
-        <div class="modal-header">
-            <h2>Edit Question</h2>
-            <button class="modal-close" onclick="closeModal()">✕</button>
         </div>
 
-        <form id="edit-question-form">
-
-            <input type="hidden" id="edit-question-id" name="question-id">
-
-            <div class="form-group">
-                <label class="form-label">Question Number</label>
-                <input type="number" id="edit-question-number" name="question-number" class="form-input">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Question Type</label>
-                <select id="edit-question-type" name="question-type" class="form-select"></select>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Question Text</label>
-                <textarea id="edit-question-text" name="question-text" class="form-textarea"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Answer</label>
-                <input type="text" id="edit-answer" name="answer" class="form-input">
-            </div>
-
-            <div class="form-group">
-                <label class="form-label">Timer (seconds)</label>
-                <input type="number" id="edit-timer-seconds" name="timer-seconds" class="form-input">
-            </div>
-
-            <div class="form-group">
-                <div class="toggle-wrapper">
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="edit-is-active" name="is-active">
-                        <span class="toggle-slider"></span>
-                    </label>
-                    <div>
-                        <div class="toggle-label">Active</div>
-                        <div class="toggle-hint">Show this question in game</div>
-                    </div>
+        <!-- Types Section -->
+        <div id="types-section" class="section-content hidden">
+            <div class="section-card" style="margin-bottom: 24px;">
+                <div class="section-header">
+                    <h2 class="section-title">Add New Question Type</h2>
+                </div>
+                <div class="section-body">
+                    <form id="add-type-form" onsubmit="handleAddQuestionType(event)"
+                        style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 16px; align-items: end;">
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label form-label-required" for="type-name">Type Name</label>
+                            <input type="text" id="type-name" name="type-name" class="form-input" required
+                                placeholder="e.g., Guess the Song">
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label class="form-label" for="type-description">Description</label>
+                            <input type="text" id="type-description" name="type-description" class="form-input"
+                                placeholder="Brief description...">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            Add Type
+                        </button>
+                    </form>
                 </div>
             </div>
 
-            <div id="current-media" style="margin-bottom:15px;"></div>
-
-            <div class="form-group">
-                <label class="form-label">Replace Media</label>
-                <input type="file" id="edit-media-file" class="form-input">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">Question Types</h2>
+                </div>
+                <div class="section-body">
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Type Name</th>
+                                    <th style="width: 100px;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="types-tbody">
+                                <tr>
+                                    <td colspan="3" class="empty-state">
+                                        <div class="empty-state-icon">⏳</div>
+                                        <div class="empty-state-title">Loading types...</div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <div class="modal-actions">
-                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                <button type="submit" class="btn btn-primary">Update Question</button>
+        <!-- History Section -->
+        <div id="history-section" class="section-content hidden">
+            <div class="section-card">
+                <div class="section-header">
+                    <h2 class="section-title">Game History</h2>
+                </div>
+                <div class="section-body">
+                    <div class="table-container" id="history-table">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Player</th>
+                                    <th>Question #</th>
+                                    <th>Session</th>
+                                    <th>Played At</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-tbody">
+                                <tr>
+                                    <td colspan="5" class="empty-state">Loading...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
-
-        </form>
-
+        </div>
     </div>
-</div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav">
+        <button class="nav-item active" data-tab="dashboard"
+            onclick="switchTab('dashboard'); closeMobileProfileMenu();">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="7" />
+                <rect x="14" y="3" width="7" height="7" />
+                <rect x="14" y="14" width="7" height="7" />
+                <rect x="3" y="14" width="7" height="7" />
+            </svg>
+            Dashboard
+        </button>
+        <button class="nav-item" data-tab="questions" onclick="switchTab('questions'); closeMobileProfileMenu();">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10" />
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                <line x1="12" y1="17" x2="12.01" y2="17" />
+            </svg>
+            Questions
+        </button>
+        <button class="nav-item" data-tab="types" onclick="switchTab('types'); closeMobileProfileMenu();">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                <line x1="7" y1="7" x2="7.01" y2="7" />
+            </svg>
+            Types
+        </button>
+    </nav>
+
+    <!-- Edit Question Modal -->
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal-card">
+
+            <div class="modal-header">
+                <h2>Edit Question</h2>
+                <button class="modal-close" onclick="closeModal()">✕</button>
+            </div>
+
+            <form id="edit-question-form">
+
+                <input type="hidden" id="edit-question-id" name="question-id">
+
+                <div class="form-group">
+                    <label class="form-label">Question Number</label>
+                    <input type="number" id="edit-question-number" name="question-number" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Question Type</label>
+                    <select id="edit-question-type" name="question-type" class="form-select"></select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Question Text</label>
+                    <textarea id="edit-question-text" name="question-text" class="form-textarea"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Answer</label>
+                    <input type="text" id="edit-answer" name="answer" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Timer (seconds)</label>
+                    <input type="number" id="edit-timer-seconds" name="timer-seconds" class="form-input">
+                </div>
+
+                <div class="form-group">
+                    <div class="toggle-wrapper">
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="edit-is-active" name="is-active">
+                            <span class="toggle-slider"></span>
+                        </label>
+                        <div>
+                            <div class="toggle-label">Active</div>
+                            <div class="toggle-hint">Show this question in game</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="current-media" style="margin-bottom:15px;"></div>
+
+                <div class="form-group">
+                    <label class="form-label">Replace Media</label>
+                    <input type="file" id="edit-media-file" class="form-input">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Update Question</button>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
 </body>
 <script src="admin.js"></script>
 
