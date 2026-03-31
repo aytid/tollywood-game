@@ -604,7 +604,9 @@ async function editQuestion(id) {
     // Populate form
     document.getElementById('edit-question-id').value = question.id;
     document.getElementById('edit-question-number').value = question.question_number;
+    setTimeout(() => {
     document.getElementById('edit-question-type').value = question.question_type || '';
+}, 100);
     document.getElementById('edit-question-text').value = question.question_text || '';
     document.getElementById('edit-answer').value = question.answer || '';
     document.getElementById('edit-timer-seconds').value = question.timer_seconds || 10;

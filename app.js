@@ -90,84 +90,9 @@ function initializeSupabase() {
     }
 }
 
-// Spin Random Question
-// async function spinRandomQuestion() {
-//     if (gameState.isSpinning) return;
-
-//     gameState.isSpinning = true;
-//     const spinBtn = document.getElementById('spin-btn');
-//     spinBtn.disabled = true;
-
-//     try {
-//         // Fetch available question numbers from database
-//         const { data: availableQuestions, error } = await supabase
-//             .from('questions')
-//             .select('question_number')
-//             .eq('is_active', true)
-//             .order('question_number', { ascending: true });
-
-//         gameState.totalQuestions = availableQuestions.length;
-//         updateStats();
-
-//         if (error) {
-//             showError('Failed to load questions');
-//             gameState.isSpinning = false;
-//             spinBtn.disabled = false;
-//             return;
-//         }
-
-//         // Filter out already used questions
-//         const availableNumbers = availableQuestions
-//             .map(q => q.question_number)
-//             .filter(num => !gameState.usedQuestions.includes(num));
-
-//         if (availableNumbers.length === 0) {
-//             showMessage('All questions have been used! Reset to start over.', 'info');
-//             gameState.isSpinning = false;
-//             spinBtn.disabled = false;
-//             return;
-//         }
-
-//         // Random number selection
-//         const randomIndex = Math.floor(Math.random() * availableNumbers.length);
-//         const selectedNumber = availableNumbers[randomIndex];
-
-//         // Calculate spin degrees (minimum 5 full rotations + position)
-//         const minSpins = 5;
-//         const baseDegrees = 360 * minSpins;
-//         const segmentSize = 360 / 7; // 7 segments on wheel
-//         const randomOffset = Math.random() * segmentSize;
-//         const finalDegrees = baseDegrees + (randomIndex * segmentSize) + randomOffset;
-
-//         // Animate spinner
-//         const wheel = document.querySelector('.spinner-wheel');
-//         wheel.style.setProperty('--spin-degrees', `${finalDegrees}deg`);
-//         wheel.classList.add('spinning');
-
-//         // Play spin sound (optional)
-//         playSound('spin');
-
-//         // Wait for animation
-//         setTimeout(async () => {
-//             wheel.classList.remove('spinning');
-//             wheel.style.transform = `rotate(${finalDegrees}deg)`;
-
-//             // Fetch question from database
-//             await fetchQuestion(selectedNumber);
-
-//             gameState.isSpinning = false;
-//             spinBtn.disabled = false;
-//         }, 4000);
-
-//     } catch (error) {
-//         console.error('Error spinning:', error);
-//         showError('Failed to spin. Please try again.');
-//         gameState.isSpinning = false;
-//         spinBtn.disabled = false;
-//     }
-// }
 async function spinRandomQuestion() {
-
+    
+    playSound("next-question");
     const spinBtn = document.getElementById('spin-btn');
     spinBtn.disabled = true;
 
@@ -240,10 +165,6 @@ async function fetchQuestion(questionNumber) {
         }
 
         gameState.currentQuestion = data;
-
-        // Mark as used
-        gameState.usedQuestions.push(questionNumber);
-        localStorage.setItem('used_questions', JSON.stringify(gameState.usedQuestions));
 
         // Show ready screen
         showScreen('ready');
@@ -327,33 +248,47 @@ function startTimer() {
     document.getElementById('start-timer-btn').style.display = 'none';
 
     const timerDisplay = document.getElementById('timer-display');
-
+    playSound('tick');
     gameState.timerInterval = setInterval(() => {
+
         gameState.timeRemaining--;
-        timerDisplay.textContent = gameState.timeRemaining;
 
-        // Visual warnings
-        if (gameState.timeRemaining <= 3) {
-            timerDisplay.classList.add('danger');
-            playSound('tick-fast');
-        } else if (gameState.timeRemaining <= 5) {
-            timerDisplay.classList.add('warning');
-            playSound('tick');
-        }
-
+        // TIME UP FIRST
         if (gameState.timeRemaining <= 0) {
             clearInterval(gameState.timerInterval);
+
             timerDisplay.textContent = "Time's Up!";
+            timerDisplay.classList.remove('warning', 'danger');
             timerDisplay.classList.add('times-up');
+
             playSound('times-up');
+            return;
+        }
+
+        timerDisplay.textContent = gameState.timeRemaining;
+
+        // WARNINGS
+        if (gameState.timeRemaining <= 3) {
+            timerDisplay.classList.add('danger');
 
         }
+        else if (gameState.timeRemaining <= 5) {
+            timerDisplay.classList.add('warning');
+        }
+
     }, 1000);
 }
 
 // Reveal Answer
 async function revealAnswer() {
     if (!gameState.currentQuestion) return;
+    const questionNumber = gameState.currentQuestion.question_number;
+    // Mark question as used ONLY after answer revealed
+    if (!gameState.usedQuestions.includes(questionNumber)) {
+        gameState.usedQuestions.push(questionNumber);
+        localStorage.setItem('used_questions', JSON.stringify(gameState.usedQuestions));
+        updateStats();
+    }
 
     // Clear timer if running
     if (gameState.timerInterval) {
@@ -579,8 +514,29 @@ function fireConfetti() {
 
 // Sound Effects (placeholder - implement with actual audio files)
 function playSound(type) {
-    // Implement sound effects here
-    // Example: new Audio(`sounds/${type}.mp3`).play();
+
+const soundFiles = {
+    spin: "spin.mp3",
+    tick: "tick.mp3",
+    "next-question": "next-question.mp3",
+    "tick-fast": "tick-fast.mp3",
+    "times-up": "times-up.mp3",
+    success: "success.mp3"
+};
+
+    const file = soundFiles[type];
+    if (!file) return;
+
+    const audio = new Audio(file);
+
+    // Lower volume for ticks
+    if (type.includes("tick")) {
+        audio.volume = 0.4;
+    }
+
+    audio.play().catch(() => {
+        console.warn("Browser blocked audio until user interaction.");
+    });
 }
 
 // Utility Functions
@@ -642,4 +598,17 @@ async function loadQuestionCount() {
         gameState.totalQuestions = data.length;
         updateStats();
     }
+}
+async function playNextQuestion() {
+
+    if (gameState.timerInterval) {
+        clearInterval(gameState.timerInterval);
+    }
+
+    gameState.currentQuestion = null;
+
+    document.getElementById('answer-overlay').classList.remove('show');
+    document.getElementById('next-question-btn-container').style.display = 'none';
+
+    await spinRandomQuestion();
 }
