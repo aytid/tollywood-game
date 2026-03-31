@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Team Building Game</title>
+    <link rel="stylesheet" href="admin.css">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="login-container">
+        <div class="login-box">
+            <h1>🔐 Admin Login</h1>
+            <p>Sign in to manage your team building game</p>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label for="login-email">Email Address</label>
+                    <input type="email" id="login-email" required placeholder="admin@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="login-password">Password</label>
+                    <input type="password" id="login-password" required placeholder="••••••••">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Sign In</button>
+            </form>
+
+            <div style="margin-top: 20px; text-align: center;">
+                <a href="index.html" style="color: var(--text-secondary); text-decoration: none;">← Back to Game</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="admin-layout hidden">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>🎮 Game Admin</h2>
+                <p>Manage your content</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-tab="dashboard">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z">
+                        </path>
+                    </svg>
+                    Dashboard
+                </button>
+                <button class="nav-item" data-tab="questions">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                        </path>
+                    </svg>
+                    Questions
+                </button>
+                <button class="nav-item" data-tab="types">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z">
+                        </path>
+                    </svg>
+                    Question Types
+                </button>
+                <button class="nav-item" data-tab="history">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z">
+                        </path>
+                    </svg>
+                    Game History
+                </button>
+                <button class="nav-item" data-tab="settings">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    Settings
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-info">
+                    <div class="user-avatar" id="user-avatar">A</div>
+                    <div class="user-details">
+                        <div class="user-name" id="user-email">admin@example.com</div>
+                        <div class="user-role">Administrator</div>
+                    </div>
+                </div>
+                <button id="logout-btn" class="btn btn-secondary" style="width: 100%;">Logout</button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Header -->
+            <header class="top-header">
+                <h1 class="header-title" id="page-title">Dashboard</h1>
+                <div class="header-actions">
+                    <a href="index.html" class="btn btn-secondary">View Game</a>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- DASHBOARD SECTION -->
+                <div id="dashboard-section" class="section">
+                    <div class="dashboard-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">❓</div>
+                            <div class="stat-value" id="total-questions">0</div>
+                            <div class="stat-label">Total Questions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">✓</div>
+                            <div class="stat-value" id="active-questions">0</div>
+                            <div class="stat-label">Active Questions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon orange">🏷️</div>
+                            <div class="stat-value" id="question-types-count">0</div>
+                            <div class="stat-label">Question Types</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon red">🎮</div>
+                            <div class="stat-value" id="total-played">0</div>
+                            <div class="stat-label">Times Played</div>
+                        </div>
+                    </div>
+
+                    <div class="section" style="margin-top: 30px;">
+                        <div class="section-header">
+                            <h2 class="section-title">Quick Actions</h2>
+                        </div>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <button class="btn btn-primary" onclick="switchTab('questions')">Add New Question</button>
+                            <button class="btn btn-success" onclick="switchTab('types')">Manage Types</button>
+                            <button class="btn btn-warning" onclick="switchTab('settings')">Game Settings</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUESTIONS SECTION -->
+                <div id="questions-section" class="section hidden">
+                    <!-- Tabs -->
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="list">All Questions</button>
+                        <button class="tab-btn" data-tab="add">Add Question</button>
+                    </div>
+
+                    <!-- List Tab -->
+                    <div id="list-tab" class="tab-content active">
+                        <div class="table-container" id="questions-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Type</th>
+                                        <th>Preview</th>
+                                        <th>Answer</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="questions-tbody">
+                                    <tr>
+                                        <td colspan="6" class="text-center"
+                                            style="padding: 40px; color: var(--text-secondary);">
+                                            Loading questions...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Add Tab -->
+                    <div id="add-tab" class="tab-content">
+                        <form id="add-question-form">
+                            <div class="form-grid">
+                                <div class="form-section">
+                                    <h3>Basic Information</h3>
+
+                                    <div class="form-group">
+                                        <label for="question-number">Question Number *</label>
+                                        <input type="number" id="question-number" name="question-number" min="1"
+                                            max="50" required placeholder="1-50">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="question-type">Question Type *</label>
+                                        <select id="question-type" name="question-type" required>
+                                            <option value="">Select Type</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="timer-seconds">Timer (seconds)</label>
+                                        <input type="number" id="timer-seconds" name="timer-seconds" min="5" max="60"
+                                            value="10">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <div class="toggle-container">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" id="is-active" name="is-active" checked>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                            <label for="is-active" style="margin: 0;">Active</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-section">
+                                    <h3>Media Upload</h3>
+
+                                    <div class="file-upload">
+                                        <input type="file" id="media-file" name="media-file" accept="image/*,video/*">
+                                        <label for="media-file" class="file-upload-label">
+                                            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12">
+                                                </path>
+                                            </svg>
+                                            <div>Click to upload image or video</div>
+                                            <small style="color: var(--text-secondary);">Supports: JPG, PNG, GIF,
+                                                MP4</small>
+                                        </label>
+                                    </div>
+                                    <div id="file-preview"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-section mt-20">
+                                <h3>Question Content</h3>
+
+                                <div class="form-group">
+                                    <label for="question-text">Question Text</label>
+                                    <textarea id="question-text" name="question-text"
+                                        placeholder="Enter your question here..."></textarea>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="answer">Answer *</label>
+                                    <input type="text" id="answer" name="answer" required
+                                        placeholder="Enter the correct answer">
+                                </div>
+                            </div>
+
+                            <div class="mt-20" style="text-align: right;">
+                                <button type="reset" class="btn btn-secondary">Clear</button>
+                                <button type="submit" class="btn btn-primary">Save Question</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- QUESTION TYPES SECTION -->
+                <div id="types-section" class="section hidden">
+                    <div class="form-section mb-20">
+                        <h3>Add New Question Type</h3>
+                        <form id="add-type-form"
+                            style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: end;">
+                            <div class="form-group" style="margin: 0;">
+                                <label for="type-name">Type Name</label>
+                                <input type="text" id="type-name" name="type-name" required
+                                    placeholder="e.g., Guess the Song">
+                            </div>
+                            <div class="form-group" style="margin: 0;">
+                                <label for="type-description">Description (Optional)</label>
+                                <input type="text" id="type-description" name="type-description"
+                                    placeholder="Brief description...">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Type</button>
+                        </form>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Type Name</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="types-tbody">
+                                <tr>
+                                    <td colspan="3" class="text-center"
+                                        style="padding: 40px; color: var(--text-secondary);">
+                                        Loading types...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- SETTINGS SECTION -->
+                <div id="settings-section" class="section hidden">
+                    <div class="form-section">
+                        <h3>Game Configuration</h3>
+
+                        <div class="form-group">
+                            <label for="default-timer">Default Timer (seconds)</label>
+                            <input type="number" id="default-timer" min="5" max="60" value="10">
+                            <small style="color: var(--text-secondary);">Default countdown time for new
+                                questions</small>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="toggle-container">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="allow-repeats" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div>
+                                    <div style="font-weight: 600;">Allow Question Repeats</div>
+                                    <small style="color: var(--text-secondary);">Allow questions to be shown multiple
+                                        times per session</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="toggle-container">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="shuffle-mode">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div>
+                                    <div style="font-weight: 600;">Shuffle Mode</div>
+                                    <small style="color: var(--text-secondary);">Randomize question order instead of
+                                        using spinner</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="toggle-container">
+                                <label class="toggle-switch">
+                                    <input type="checkbox" id="sound-effects" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                                <div>
+                                    <div style="font-weight: 600;">Enable Sound Effects</div>
+                                    <small style="color: var(--text-secondary);">Play sounds during game events</small>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="text-align: right; margin-top: 20px;">
+                            <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+                        </div>
+                    </div>
+
+                    <div class="form-section mt-20">
+                        <h3>Custom Settings</h3>
+                        <form id="add-setting-form"
+                            style="display: grid; grid-template-columns: 1fr 1fr auto; gap: 15px; align-items: end; margin-bottom: 20px;">
+                            <div class="form-group" style="margin: 0;">
+                                <label for="setting-key">Setting Key</label>
+                                <input type="text" id="setting-key" name="setting-key" required
+                                    placeholder="e.g., max_players">
+                            </div>
+                            <div class="form-group" style="margin: 0;">
+                                <label for="setting-value">Setting Value</label>
+                                <input type="text" id="setting-value" name="setting-value" required
+                                    placeholder="e.g., 10">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Add Setting</button>
+                        </form>
+
+                        <div class="table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Setting Key</th>
+                                        <th>Setting Value</th>
+                                        <th>Last Updated</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="settings-tbody">
+                                    <tr>
+                                        <td colspan="3" class="text-center"
+                                            style="padding: 40px; color: var(--text-secondary);">
+                                            Loading settings...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="form-section mt-20">
+                        <h3 style="color: var(--danger);">Danger Zone</h3>
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <button class="btn btn-danger" onclick="clearAllData()">Clear All Questions</button>
+                            <button class="btn btn-warning" onclick="resetStats()">Reset Statistics</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GAME HISTORY SECTION -->
+                <div id="history-section" class="section hidden">
+                    <div class="section-header" style="margin-bottom: 20px;">
+                        <h2 class="section-title">Game Play History</h2>
+                        <p style="color: var(--text-secondary); margin-top: 5px;">View all recorded game sessions and
+                            player activities</p>
+                    </div>
+
+                    <div class="table-container" id="history-table">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Player Name</th>
+                                    <th>Question #</th>
+                                    <th>Session ID</th>
+                                    <th>Played At</th>
+                                    <th>Question Preview</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-tbody">
+                                <tr>
+                                    <td colspan="5" class="text-center"
+                                        style="padding: 40px; color: var(--text-secondary);">
+                                        Loading game history...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Edit Question Modal -->
+    <div id="edit-modal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Edit Question</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="edit-question-form">
+                    <input type="hidden" id="edit-question-id" name="question-id">
+
+                    <div class="form-group">
+                        <label for="edit-question-number">Question Number</label>
+                        <input type="number" id="edit-question-number" name="question-number" min="1" max="50" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-question-type">Question Type</label>
+                        <select id="edit-question-type" name="question-type" required>
+                            <option value="">Select Type</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Current Media</label>
+                        <div id="current-media" style="margin-top: 10px;"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-media-file">Upload New Media (optional)</label>
+                        <input type="file" id="edit-media-file" name="media-file" accept="image/*,video/*"
+                            style="margin-top: 8px;">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-question-text">Question Text</label>
+                        <textarea id="edit-question-text" name="question-text" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-answer">Answer</label>
+                        <input type="text" id="edit-answer" name="answer" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="edit-timer-seconds">Timer (seconds)</label>
+                        <input type="number" id="edit-timer-seconds" name="timer-seconds" min="5" max="60" value="10">
+                    </div>
+
+                    <div class="form-group">
+                        <div class="toggle-container">
+                            <label class="toggle-switch">
+                                <input type="checkbox" id="edit-is-active" name="is-active">
+                                <span class="toggle-slider"></span>
+                            </label>
+                            <label for="edit-is-active" style="margin: 0;">Active</label>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer" style="padding: 20px 0 0 0; border: none;">
+                        <button type="button" class="btn btn-secondary modal-cancel">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Update Question</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="supabase.js"></script>
+    <script src="admin.js"></script>
+</body>
+
+</html>

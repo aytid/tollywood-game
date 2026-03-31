@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Building Game 🎯</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Supabase JS Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+</head>
+
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation"></div>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- Confetti Canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="container">
+
+        <!-- Error Message Container -->
+        <div id="error-message" class="error-message" style="display: none;"></div>
+
+        <!-- Loading Indicator -->
+        <div id="loading-indicator" style="display: none; text-align: center; padding: 20px;">
+            <div class="loading"></div>
+            <p style="margin-top: 10px; color: var(--text-muted);">Loading...</p>
+        </div>
+
+        <!-- LANDING SCREEN -->
+        <div id="landing-screen" class="game-screen active">
+            <div class="glass-card" style="text-align: center;">
+                <!-- Stats -->
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <div class="stat-number" id="used-count">0</div>
+                        <div class="stat-label">Used</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="remaining-count">0</div>
+                        <div class="stat-label">Remaining</div>
+                    </div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+
+                <!-- Spinner Wheel -->
+                <!-- <div class="spinner-container">
+                    <div class="spinner-pointer"></div>
+                    <div class="spinner-wheel" id="spinner-wheel">
+                        <div class="spinner-center">?</div>
+                    </div>
+                </div> -->
+
+                <!-- Action Buttons -->
+                <div class="btn-container">
+                    <button id="spin-btn" class="btn btn-primary">View Question</button>
+                    <button id="reset-game-btn" class="btn btn-secondary">Reset All</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- READY SCREEN -->
+        <div id="ready-screen" class="game-screen">
+            <div class="glass-card" style="text-align: center;">
+                <div class="question-type-badge" id="ready-question-type">
+                    Guess the Movie
+                </div>
+
+                <div class="question-number-display" id="ready-question-number">
+                    #1
+                </div>
+
+                <p class="ready-text">Are you ready?</p>
+
+                <div class="btn-container">
+                    <button id="ready-next-btn" class="btn btn-accent">Reveal Question</button>
+                    <button class="btn btn-secondary" onclick="resetGame()">Back</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- QUESTION SCREEN -->
+        <div id="question-screen" class="game-screen">
+            <div class="glass-card">
+
+                <!-- Question Type Badge -->
+                <div style="text-align:center;">
+                    <span class="question-type-badge" id="question-type">Guess the Movie</span>
+                </div>
+
+                <!-- Question Number -->
+                <div style="text-align:center;margin-bottom:20px;">
+                    <span id="question-number" style="font-size:1.2rem;color:var(--text-muted);">
+                        Question #1
+                    </span>
+                </div>
+
+                <!-- MAIN LAYOUT -->
+                <div class="question-layout">
+
+                    <!-- Media -->
+                    <div class="media-container" id="media-container">
+                        <!-- Media will load here -->
+                    </div>
+
+                    <!-- Side Panel -->
+                    <div class="question-side">
+
+                        <!-- Timer -->
+                        <div class="timer-container">
+                            <div class="timer-display" id="timer-display">10</div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <!-- Answer Overlay -->
+                <div class="answer-overlay" id="answer-overlay">
+                    <div class="answer-text" id="answer-text"></div>
+                </div>
+
+                <!-- Buttons -->
+                <div class="btn-container">
+                    <button id="start-timer-btn" class="btn btn-primary">Start Timer</button>
+
+                    <button id="reveal-answer-btn" class="btn btn-success" style="display:none;">Reveal Answer</button>
+
+                </div>
+
+                <div id="next-question-btn-container" style="display:none;text-align:center;margin-top:20px;">
+                    <button class="btn btn-success" onclick="resetGame()">Play Next Question</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Link -->
+    <a href="admin.html" class="admin-link">⚙️ Admin Panel</a>
+
+    <!-- Keyboard Shortcuts Hint -->
+    <div class="keyboard-hint">
+        <kbd>Space</kbd> Spin/Start <kbd>Enter</kbd> Next <kbd>Esc</kbd> Back <kbd>F</kbd> Fullscreen
+    </div>
+
+    <!-- Scripts -->
+    <script src="supabase.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
