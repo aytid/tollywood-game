@@ -198,7 +198,6 @@ function switchTab(tabName) {
         'questions': 'Manage Questions',
         'types': 'Question Types',
         'settings': 'Game Settings',
-        'history': 'Game History'
     };
     document.getElementById('page-title').textContent = titles[tabName] || 'Dashboard';
 
@@ -209,8 +208,6 @@ function switchTab(tabName) {
         loadQuestionTypes();
     } else if (tabName === 'settings') {
         loadGameSettings();
-    } else if (tabName === 'history') {
-        loadGameHistory();
     }
 
     adminState.currentTab = tabName;
@@ -261,18 +258,10 @@ async function loadDashboardData() {
 
         if (typeError) throw typeError;
 
-        // Get total games played
-        const { count: totalPlayed, error: playError } = await supabase
-            .from('game_history')
-            .select('*', { count: 'exact', head: true });
-
-        if (playError) throw playError;
-
         // Update dashboard stats
         document.getElementById('total-questions').textContent = totalQuestions || 0;
         document.getElementById('active-questions').textContent = activeQuestions || 0;
         document.getElementById('question-types-count').textContent = typeCount || 0;
-        document.getElementById('total-played').textContent = totalPlayed || 0;
 
     } catch (error) {
         console.error('Error loading dashboard:', error);
@@ -320,48 +309,79 @@ async function loadQuestions() {
 }
 
 // Render Questions Table
-function renderQuestionsTable(questions) {
-    const tbody = document.getElementById('questions-tbody');
+function renderQuestionsTable(questions){
 
-    if (!questions || questions.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" class="text-center" style="padding: 40px; color: var(--text-secondary);">
-                    No questions found. Add your first question!
-                </td>
-            </tr>
+    const container = document.getElementById("questions-cards");
+
+    if(!questions || questions.length===0){
+        container.innerHTML = `
+            <div style="padding:40px;text-align:center;color:#94a3b8;">
+                No questions found
+            </div>
         `;
         return;
     }
 
-    tbody.innerHTML = questions.map(q => `
-        <tr>
-            <td>#${q.question_number}</td>
-            <td>${q.question_types?.type_name || q.question_type || 'N/A'}</td>
-            <td>
-${q.media_url ?
-            `<img src="${q.media_url}" 
-      alt="Preview" 
-      class="media-preview"
-      onerror="this.outerHTML='<span style=&quot;color: var(--text-secondary);&quot;>No Preview Available</span>'">`
-            :
-            '<span style="color: var(--text-secondary);">No Preview Available</span>'
+    container.innerHTML = questions.map(q=>{
+
+        let preview = "";
+
+        if(q.media_url){
+
+            if(q.media_type==="video"){
+                preview = `<video class="question-preview" src="${q.media_url}"></video>`;
+            }
+
+            else if(q.media_type==="audio"){
+                preview = `
+                <div style="height:150px;display:flex;align-items:center;justify-content:center;background:#0f172a;">
+                    🎧 Audio
+                </div>`;
+            }
+
+            else{
+                preview = `<img class="question-preview" src="${q.media_url}">`;
+            }
+
+        }else{
+            preview = `
+            <div style="height:150px;display:flex;align-items:center;justify-content:center;background:#0f172a;">
+                No Preview
+            </div>`;
         }
-            </td>
-            <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;">${q.answer || 'N/A'}</td>
-            <td>
-                <span style="color: ${q.is_active ? 'var(--success)' : 'var(--danger)'};">
-                    ${q.is_active ? '✓ Active' : '✗ Inactive'}
-                </span>
-            </td>
-            <td>
-                <div class="actions">
-                    <button class="btn btn-sm btn-info" onclick="editQuestion('${q.id}')">Edit</button>
-                    <button class="btn btn-sm btn-danger" onclick="deleteQuestion('${q.id}')">Delete</button>
+
+        return `
+        <div class="question-card">
+
+            <div class="edit-icon" onclick="editQuestion('${q.id}')">
+                ✏️
+            </div>
+
+            ${preview}
+
+            <div class="question-card-body">
+
+                <div class="question-number">
+                    Question #${q.question_number}
                 </div>
-            </td>
-        </tr>
-    `).join('');
+
+                <div class="question-type">
+                    ${q.question_types?.type_name || q.question_type || ""}
+                </div>
+
+                <div style="font-size:13px;margin-bottom:6px;">
+                    ${q.question_text || ""}
+                </div>
+
+                <div class="question-answer">
+                    ${q.answer}
+                </div>
+
+            </div>
+
+        </div>
+        `;
+    }).join("");
 }
 
 // Load Question Types
@@ -891,58 +911,6 @@ async function handleGameSetting(e) {
     }
 }
 
-// Load Game History
-async function loadGameHistory() {
-    try {
-        showLoading('history-table', true);
-
-        const { data, error } = await supabase
-            .from('game_history')
-            .select(`
-                *,
-                questions (question_number, question_text)
-            `)
-            .order('played_at', { ascending: false })
-            .limit(100);
-
-        if (error) throw error;
-
-        renderGameHistory(data || []);
-
-    } catch (error) {
-        console.error('Error loading game history:', error);
-        showAlert('Failed to load game history', 'error');
-    } finally {
-        showLoading('history-table', false);
-    }
-}
-
-// Render Game History
-function renderGameHistory(history) {
-    const tbody = document.getElementById('history-tbody');
-
-    if (!tbody) return; // History table not in HTML yet
-
-    if (!history || history.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="5" class="text-center" style="padding: 40px; color: var(--text-secondary);">
-                    No game history yet.
-                </td>
-            </tr>
-        `;
-        return;
-    }
-
-    tbody.innerHTML = history.map(h => `
-        <tr>
-            <td>${h.player_name || 'Anonymous'}</td>
-            <td>#${h.question_number}</td>
-            <td><small style="color: var(--text-secondary);">${h.session_id.substring(0, 12)}...</small></td>
-            <td>${new Date(h.played_at).toLocaleString()}</td>
-        </tr>
-    `).join('');
-}
 
 // Modal Functions
 function openModal(modalId) {
@@ -1033,7 +1001,6 @@ window.deleteQuestion = deleteQuestion;
 window.deleteQuestionType = deleteQuestionType;
 window.openModal = openModal;
 window.closeModal = closeModal;
-window.loadGameHistory = loadGameHistory;
 window.toggleMobileProfileMenu = toggleMobileProfileMenu;
 window.closeMobileProfileMenu = closeMobileProfileMenu;
 window.showUserProfile = showUserProfile;
