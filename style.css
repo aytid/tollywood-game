@@ -462,7 +462,7 @@ header h1 {
 }
 
 .answer-text {
-    font-size: 3rem;
+    font-size: 30px; 
     font-weight: 800;
     color: var(--success-color);
     text-align: center;
@@ -781,4 +781,20 @@ header h1 {
     width: auto;
     height: auto;
     white-space: nowrap;
+}
+.answer-close-btn{
+    position:absolute;
+    left: 100%;
+    background:#ef4444;
+    border:none;
+    color:white;
+    width:32px;
+    height:32px;
+    border-radius:50%;
+    cursor:pointer;
+    font-size:16px;
+}
+
+.answer-card{
+    position:relative;
 }

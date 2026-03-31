@@ -248,7 +248,7 @@ function startTimer() {
     document.getElementById('start-timer-btn').style.display = 'none';
 
     const timerDisplay = document.getElementById('timer-display');
-    playSound('tick');
+    // playSound('tick');
     gameState.timerInterval = setInterval(() => {
 
         gameState.timeRemaining--;
@@ -260,7 +260,7 @@ function startTimer() {
             timerDisplay.textContent = "Time's Up!";
             timerDisplay.classList.remove('warning', 'danger');
             timerDisplay.classList.add('times-up');
-
+            document.getElementById("next-question-btn-container").style.display = "block";
             playSound('times-up');
             return;
         }
@@ -282,6 +282,7 @@ function startTimer() {
 // Reveal Answer
 async function revealAnswer() {
     if (!gameState.currentQuestion) return;
+    document.getElementById("next-question-btn-container").style.display = "block";
     const questionNumber = gameState.currentQuestion.question_number;
     // Mark question as used ONLY after answer revealed
     if (!gameState.usedQuestions.includes(questionNumber)) {
@@ -617,4 +618,7 @@ function stopAllSounds(){
         sound.pause();
         sound.currentTime = 0;
     });
+}
+function closeAnswerOverlay(){
+    document.getElementById("answer-overlay").classList.remove("show");
 }
