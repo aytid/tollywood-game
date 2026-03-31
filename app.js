@@ -202,17 +202,103 @@ function showQuestion() {
     }
 }
 
-// Update Question Screen
-function updateQuestionScreen(question) {
+// Initialize timer ring
+function initTimerRing() {
+    const ring = document.getElementById('timer-ring');
+    if (!ring) return;
+    
+    const radius = 74;
+    const circumference = 2 * Math.PI * radius;
+    
+    ring.style.strokeDasharray = circumference;
+    ring.style.strokeDashoffset = 0;
+    
+    return circumference;
+}
 
+let timerCircumference = 0;
+
+// Start Timer - Improved Version
+function startTimer() {
+    if (!gameState.currentQuestion) return;
+
+    const timerSeconds = gameState.currentQuestion.timer_seconds || 10;
+    gameState.timeRemaining = timerSeconds;
+    
+    // Initialize ring
+    timerCircumference = initTimerRing();
+
+    document.getElementById('start-timer-btn').style.display = 'none';
+
+    const timerDisplay = document.getElementById('timer-display');
+    const timerText = document.getElementById('timer-text');
+    const ring = document.getElementById('timer-ring');
+    
+    // Reset classes
+    timerDisplay.classList.remove('warning', 'danger', 'times-up');
+    
+    // Update ring progress
+    const updateRing = () => {
+        if (timerCircumference && ring) {
+            const progress = (timerSeconds - gameState.timeRemaining) / timerSeconds;
+            const offset = timerCircumference * progress;
+            ring.style.strokeDashoffset = offset;
+        }
+    };
+    
+    gameState.timerInterval = setInterval(() => {
+        gameState.timeRemaining--;
+        
+        // Update text
+        if (timerText) {
+            timerText.textContent = gameState.timeRemaining;
+        }
+        
+        // Update ring
+        updateRing();
+
+        // TIME UP
+        if (gameState.timeRemaining <= 0) {
+            clearInterval(gameState.timerInterval);
+            
+            // Transform to Time's Up state
+            timerDisplay.classList.add('times-up');
+            if (timerText) {
+                timerText.innerHTML = "Time's<br>Up!";
+            }
+            
+            // Show next question button
+            document.getElementById("next-question-btn-container").style.display = "block";
+            playSound('times-up');
+            return;
+        }
+
+        // WARNINGS with visual states
+        if (gameState.timeRemaining <= 3) {
+            timerDisplay.classList.remove('warning');
+            timerDisplay.classList.add('danger');
+            if (ring) ring.style.stroke = '#ff6b6b';
+            playSound('tick-fast');
+        }
+        else if (gameState.timeRemaining <= 5) {
+            timerDisplay.classList.add('warning');
+            if (ring) ring.style.stroke = '#ff9800';
+        }
+
+    }, 1000);
+}
+
+// Update Question Screen - Modified to use new timer
+function updateQuestionScreen(question) {
     const typeName = question.question_types?.type_name || question.question_type || 'General';
 
     document.getElementById('question-type').textContent = typeName;
     document.getElementById('question-number').textContent = `Question #${question.question_number}`;
-    document.getElementById('question-text').textContent = question.question_text || '';
 
     const mediaContainer = document.getElementById('media-container');
     const timerDisplay = document.getElementById('timer-display');
+    const timerText = document.getElementById('timer-text');
+    const ring = document.getElementById('timer-ring');
 
     mediaContainer.innerHTML = '';
 
@@ -222,12 +308,8 @@ function updateQuestionScreen(question) {
         typeName.toLowerCase() === 'audio';
 
     if (isAudioQuestion) {
-
-        // hide timer
-        timerDisplay.style.display = "none";
-
-        // remove image placeholder
-        mediaContainer.innerHTML = '';
+        // Hide timer for audio questions
+        if (timerDisplay) timerDisplay.style.display = "none";
 
         if (question.media_url) {
             const audio = document.createElement('audio');
@@ -235,88 +317,61 @@ function updateQuestionScreen(question) {
             audio.controls = true;
             audio.autoplay = true;
             audio.preload = "metadata";
+            audio.style.display = "block";
+            audio.style.margin = "40px auto";
 
             mediaContainer.appendChild(audio);
         }
 
     } else {
-
-        // show timer for normal questions
-        timerDisplay.style.display = "block";
+        // Show timer for other questions
+        if (timerDisplay) {
+            timerDisplay.style.display = "flex";
+            timerDisplay.classList.remove('warning', 'danger', 'times-up');
+        }
+        
+        // Reset timer text
+        const timerSeconds = question.timer_seconds || 10;
+        if (timerText) {
+            timerText.textContent = timerSeconds;
+            timerText.innerHTML = timerSeconds;
+        }
+        
+        // Reset ring
+        timerCircumference = initTimerRing();
+        if (ring) {
+            ring.style.strokeDashoffset = 0;
+            ring.style.stroke = '#ffd93d';
+        }
 
         if (question.media_url) {
-
             if (question.media_type === 'video') {
-
                 const video = document.createElement('video');
                 video.src = question.media_url;
                 video.controls = true;
                 video.preload = "metadata";
+                video.style.maxWidth = "450px";
+                video.style.borderRadius = "20px";
+
                 mediaContainer.appendChild(video);
-
             } else {
-
                 const img = document.createElement('img');
                 img.src = question.media_url;
                 img.alt = "Question Image";
                 img.loading = "lazy";
-                mediaContainer.appendChild(img);
+                img.style.maxWidth = "450px";
+                img.style.borderRadius = "20px";
 
+                mediaContainer.appendChild(img);
             }
         }
     }
 
-    // Reset timer value
-    timerDisplay.textContent = question.timer_seconds || 10;
-    timerDisplay.classList.remove('warning', 'danger');
-
-    // Reset buttons
     document.getElementById('start-timer-btn').style.display = 'none';
     document.getElementById('reveal-answer-btn').style.display = 'inline-flex';
 
-    // Hide answer overlay
     const answerOverlay = document.getElementById('answer-overlay');
     answerOverlay.classList.remove('show');
-}
-// Start Timer
-function startTimer() {
-    if (!gameState.currentQuestion) return;
-
-    const timerSeconds = gameState.currentQuestion.timer_seconds || 10;
-    gameState.timeRemaining = timerSeconds;
-
-    document.getElementById('start-timer-btn').style.display = 'none';
-
-    const timerDisplay = document.getElementById('timer-display');
-    // playSound('tick');
-    gameState.timerInterval = setInterval(() => {
-
-        gameState.timeRemaining--;
-
-        // TIME UP FIRST
-        if (gameState.timeRemaining <= 0) {
-            clearInterval(gameState.timerInterval);
-
-            timerDisplay.textContent = "Time's Up!";
-            timerDisplay.classList.remove('warning', 'danger');
-            timerDisplay.classList.add('times-up');
-            document.getElementById("next-question-btn-container").style.display = "block";
-            playSound('times-up');
-            return;
-        }
-
-        timerDisplay.textContent = gameState.timeRemaining;
-
-        // WARNINGS
-        if (gameState.timeRemaining <= 3) {
-            timerDisplay.classList.add('danger');
-
-        }
-        else if (gameState.timeRemaining <= 5) {
-            timerDisplay.classList.add('warning');
-        }
-
-    }, 1000);
 }
 
 // Reveal Answer

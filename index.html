@@ -40,7 +40,7 @@
 
             <div class="glass-card" style="text-align: center;">
                     <div class="banner-container">
-        <img src="tollywood-tamasha.png" alt="Tollywood Tamasha">
+        <img style="height: 200px;" src="tollywood-tamasha.png" alt="Tollywood Tamasha">
     </div>
                 <!-- Stats -->
                 <div class="stats-container">
@@ -130,9 +130,19 @@
                     <div class="question-side">
 
                         <!-- Timer -->
-                        <div class="timer-container">
-                            <div class="timer-display" id="timer-display">10</div>
-                        </div>
+<!-- Timer -->
+<div class="timer-container">
+    <div class="timer-display" id="timer-display">
+        <!-- SVG Progress Ring -->
+        <svg class="timer-ring-container" viewBox="0 0 156 156">
+            <circle class="timer-ring-bg" cx="78" cy="78" r="74"></circle>
+            <circle class="timer-ring-progress" id="timer-ring" cx="78" cy="78" r="74"></circle>
+        </svg>
+        <!-- Timer Text -->
+        <span id="timer-text">10</span>
+    </div>
+    <span class="timer-label">Seconds</span>
+</div>
 
                     </div>
 
