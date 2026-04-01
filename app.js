@@ -92,7 +92,7 @@ function initializeSupabase() {
 
 async function spinRandomQuestion() {
 
-    // playSound("next-question");
+    playSound("next-question");
     const spinBtn = document.getElementById('spin-btn');
     spinBtn.disabled = true;
 
@@ -183,7 +183,7 @@ async function fetchQuestion(questionNumber) {
 function updateReadyScreen(question) {
     const typeName = question.question_types?.type_name || question.question_type || 'General';
     document.getElementById('ready-question-type').textContent = typeName;
-    document.getElementById('ready-question-number').textContent = 'Question '+`#${question.question_number}`;
+    document.getElementById('ready-question-number').textContent = 'Question ' + `#${question.question_number}`;
 }
 
 // Show Question Screen
@@ -206,13 +206,13 @@ function showQuestion() {
 function initTimerRing() {
     const ring = document.getElementById('timer-ring');
     if (!ring) return;
-    
+
     const radius = 74;
     const circumference = 2 * Math.PI * radius;
-    
+
     ring.style.strokeDasharray = circumference;
     ring.style.strokeDashoffset = 0;
-    
+
     return circumference;
 }
 
@@ -224,7 +224,7 @@ function startTimer() {
 
     const timerSeconds = gameState.currentQuestion.timer_seconds || 10;
     gameState.timeRemaining = timerSeconds;
-    
+
     // Initialize ring
     timerCircumference = initTimerRing();
 
@@ -232,11 +232,15 @@ function startTimer() {
 
     const timerDisplay = document.getElementById('timer-display');
     const timerText = document.getElementById('timer-text');
+    const timerLabel = document.getElementById('timer-label');
     const ring = document.getElementById('timer-ring');
-    
+
     // Reset classes
     timerDisplay.classList.remove('warning', 'danger', 'times-up');
-    
+
+    // Show seconds label at start
+    if (timerLabel) timerLabel.style.display = 'block';
+
     // Update ring progress
     const updateRing = () => {
         if (timerCircumference && ring) {
@@ -245,31 +249,33 @@ function startTimer() {
             ring.style.strokeDashoffset = offset;
         }
     };
-    
+
     gameState.timerInterval = setInterval(() => {
         gameState.timeRemaining--;
-        
+
         // Update text
         if (timerText) {
             timerText.textContent = gameState.timeRemaining;
         }
-        
+
         // Update ring
         updateRing();
 
         // TIME UP
         if (gameState.timeRemaining <= 0) {
             clearInterval(gameState.timerInterval);
-            
+
             // Transform to Time's Up state
             timerDisplay.classList.add('times-up');
             if (timerText) {
                 timerText.innerHTML = "Time's<br>Up!";
             }
-            
+
+            // HIDE SECONDS LABEL when time is up
+            if (timerLabel) timerLabel.style.display = 'none';
+
             // Show next question button
             document.getElementById("next-question-btn-container").style.display = "block";
-            playSound('times-up');
             return;
         }
 
@@ -278,7 +284,6 @@ function startTimer() {
             timerDisplay.classList.remove('warning');
             timerDisplay.classList.add('danger');
             if (ring) ring.style.stroke = '#ff6b6b';
-            playSound('tick-fast');
         }
         else if (gameState.timeRemaining <= 5) {
             timerDisplay.classList.add('warning');
@@ -288,7 +293,7 @@ function startTimer() {
     }, 1000);
 }
 
-// Update Question Screen - Modified to use new timer
+// Update Question Screen - Modified to handle media types and question text
 function updateQuestionScreen(question) {
     const typeName = question.question_types?.type_name || question.question_type || 'General';
 
@@ -296,31 +301,66 @@ function updateQuestionScreen(question) {
     document.getElementById('question-number').textContent = `Question #${question.question_number}`;
 
     const mediaContainer = document.getElementById('media-container');
-    const timerDisplay = document.getElementById('timer-display');
-    const timerText = document.getElementById('timer-text');
-    const ring = document.getElementById('timer-ring');
-    const timeLabel =  document.getElementById('timer-label');
-    
     const timerContainer = document.getElementById("timer-container");
-    // HIDE TIMER IF 0
-    if (question.timer_seconds === 0) {
-        timerContainer.style.display = "none";
-    } else {
-        timerContainer.style.display = "block";
-    }
+    const questionTextContainer = document.getElementById("question-text-container");
+    const questionText = document.getElementById("question-text");
+
+    // Clear media container
     mediaContainer.innerHTML = '';
 
+    // Determine media type
     const isAudioQuestion =
         question.media_type === 'audio' ||
         question.question_type === 'Audio' ||
         typeName.toLowerCase() === 'audio';
 
-    if (isAudioQuestion) {
-        // Hide timer for audio questions
-        if (timerDisplay) timerDisplay.style.display = "none";
-        if (timeLabel) timeLabel.style.display = "none";
+    const isVideoQuestion =
+        question.media_type === 'video' ||
+        question.question_type === 'Video' ||
+        typeName.toLowerCase() === 'video';
 
-        if (question.media_url) {
+    // Handle timer visibility based on media type
+    // Audio: Hide timer, Video: Show timer, Image/None: Show timer
+    if (isAudioQuestion) {
+        // Audio - hide entire timer component
+        if (timerContainer) timerContainer.style.display = "none";
+    } else {
+        // Video or Image or None - show timer (if timer_seconds > 0)
+        if (question.timer_seconds === 0) {
+            if (timerContainer) timerContainer.style.display = "none";
+        } else {
+            if (timerContainer) timerContainer.style.display = "block";
+
+            // Reset timer display
+            const timerDisplay = document.getElementById('timer-display');
+            const timerText = document.getElementById('timer-text');
+            const ring = document.getElementById('timer-ring');
+
+            if (timerDisplay) {
+                timerDisplay.style.display = "flex";
+                timerDisplay.classList.remove('warning', 'danger', 'times-up');
+            }
+
+            // Reset timer text
+            const timerSeconds = question.timer_seconds || 10;
+            if (timerText) {
+                timerText.textContent = timerSeconds;
+                timerText.innerHTML = timerSeconds;
+            }
+
+            // Reset ring
+            timerCircumference = initTimerRing();
+            if (ring) {
+                ring.style.strokeDashoffset = 0;
+                ring.style.stroke = '#ffd93d';
+            }
+        }
+    }
+
+    // Handle media display
+    if (question.media_url) {
+        if (isAudioQuestion) {
+            // Audio element
             const audio = document.createElement('audio');
             audio.src = question.media_url;
             audio.controls = true;
@@ -328,65 +368,54 @@ function updateQuestionScreen(question) {
             audio.preload = "metadata";
             audio.style.display = "block";
             audio.style.margin = "40px auto";
-
             mediaContainer.appendChild(audio);
-        }
 
-    } else {
-        // Show timer for other questions
-        if (timerDisplay) {
-            timerDisplay.style.display = "flex";
-            timerDisplay.classList.remove('warning', 'danger', 'times-up');
-        }
-        
-        // Reset timer text
-        const timerSeconds = question.timer_seconds || 10;
-        if (timerText) {
-            timerText.textContent = timerSeconds;
-            timerText.innerHTML = timerSeconds;
-        }
-        
-        // Reset ring
-        timerCircumference = initTimerRing();
-        if (ring) {
-            ring.style.strokeDashoffset = 0;
-            ring.style.stroke = '#ffd93d';
-        }
+        } else if (isVideoQuestion) {
+            // Video element - larger size
+            const video = document.createElement('video');
+            video.src = question.media_url;
+            video.controls = true;
+            video.autoplay = true;
+            video.preload = "metadata";
+            video.style.width = "100%";
+            video.style.maxWidth = "600px";
+            video.style.borderRadius = "10px";
+            mediaContainer.appendChild(video);
 
-        if (question.media_url) {
-            if (question.media_type === 'video') {
-                const video = document.createElement('video');
-                video.src = question.media_url;
-                video.controls = true;
-                video.autoplay = true;
-                video.preload = "metadata";
-                video.style.maxWidth = "450px";
-                video.style.borderRadius = "20px";
-
-                mediaContainer.appendChild(video);
-            } else {
-                const img = document.createElement('img');
-                playSound('tick');
-                img.src = question.media_url;
-                img.alt = "Question Image";
-                img.loading = "lazy";
-                img.style.maxWidth = "450px";
-                img.style.borderRadius = "20px";
-
-                mediaContainer.appendChild(img);
-            }
+        } else {
+            // Image - larger size
+            const img = document.createElement('img');
+            img.src = question.media_url;
+            img.alt = "Question Image";
+            img.loading = "lazy";
+            img.style.width = "100%";
+            img.style.maxWidth = "600px";
+            img.style.borderRadius = "10px";
+            mediaContainer.appendChild(img);
         }
     }
 
+    // Handle question text visibility
+    if (question.question_text && question.question_text.trim() !== "") {
+        questionText.textContent = question.question_text;
+        questionTextContainer.style.display = "block";
+    } else {
+        questionTextContainer.style.display = "none";
+    }
+
+    // Reset buttons
     document.getElementById('start-timer-btn').style.display = 'none';
     document.getElementById('reveal-answer-btn').style.display = 'inline-flex';
+    document.getElementById("next-question-btn-container").style.display = "none";
 
+    // Reset answer overlay
     const answerOverlay = document.getElementById('answer-overlay');
     answerOverlay.classList.remove('show');
 }
 
 // Reveal Answer
 async function revealAnswer() {
+    playSound("next-question");
     if (!gameState.currentQuestion) return;
     document.getElementById("next-question-btn-container").style.display = "block";
     const questionNumber = gameState.currentQuestion.question_number;
@@ -732,9 +761,9 @@ function closeAnswerOverlay() {
 const questionText = document.getElementById("question-text");
 const questionTextContainer = document.getElementById("question-text-container");
 
-if(question.question_text && question.question_text.trim() !== ""){
+if (question.question_text && question.question_text.trim() !== "") {
     questionText.textContent = question.question_text;
     questionTextContainer.style.display = "block";
-}else{
+} else {
     questionTextContainer.style.display = "none";
 }
