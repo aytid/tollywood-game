@@ -20,6 +20,11 @@
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
+        <!-- Particles Container -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Noise Overlay -->
+    <div class="noise-overlay"></div>
 
     <!-- Confetti Canvas -->
     <canvas id="confetti-canvas"></canvas>
@@ -204,6 +209,37 @@
     <!-- Scripts -->
     <script src="supabase.js"></script>
     <script src="app.js"></script>
+        <!-- Particle Generator Script -->
+    <script>
+        // Generate floating particles
+        const particlesContainer = document.getElementById('particles');
+        const particleCount = 30;
+        
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.animationDuration = (Math.random() * 10 + 8) + 's';
+            particle.style.animationDelay = (Math.random() * 5) + 's';
+            particle.style.opacity = Math.random() * 0.4 + 0.1;
+            particle.style.width = particle.style.height = (Math.random() * 3 + 1) + 'px';
+            particlesContainer.appendChild(particle);
+        }
+        
+        // Mouse parallax effect for orbs
+        document.addEventListener('mousemove', (e) => {
+            const shapes = document.querySelectorAll('.shape');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            shapes.forEach((shape, index) => {
+                const speed = (index + 1) * 15;
+                const xOffset = (x - 0.5) * speed;
+                const yOffset = (y - 0.5) * speed;
+                shape.style.transform = `translate(${xOffset}px, ${yOffset}px)`;
+            });
+        });
+    </script>
 </body>
 
 </html>
