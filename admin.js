@@ -411,26 +411,35 @@ function renderQuestionTypes(types){
         return;
     }
 
-    container.innerHTML = types.map(t=>`
+container.innerHTML = types.map(t => `
 
-        <div class="type-card">
+<div class="type-card">
 
-            <button class="delete-type"
-                onclick="deleteQuestionType('${t.id}')">
-                🗑
-            </button>
+    <div class="type-actions">
 
-            <div class="type-name">
-                ${t.type_name}
-            </div>
+        <button class="edit-type"
+            onclick="editQuestionType('${t.id}')">
+            ✏️
+        </button>
 
-            <div class="type-desc">
-                ${t.description || ""}
-            </div>
+        <button class="delete-type"
+            onclick="deleteQuestionType('${t.id}')">
+            🗑
+        </button>
 
-        </div>
+    </div>
 
-    `).join("");
+    <div class="type-name">
+        ${t.type_name}
+    </div>
+
+    <div class="type-desc">
+        ${t.description || ""}
+    </div>
+
+</div>
+
+`).join("");
 }
 // Populate Type Dropdowns
 function populateTypeDropdowns(types) {
@@ -1007,3 +1016,22 @@ function toggleSidebar() {
 
 // Close sidebar when clicking overlay
 document.getElementById('sidebar-overlay').addEventListener('click', toggleSidebar);
+function editQuestionType(id) {
+
+    // Find the type from adminState
+    const type = adminState.questionTypes.find(t => t.id === id);
+
+    if (!type) {
+        console.error("Question type not found:", id);
+        showAlert("Question type not found", "error");
+        return;
+    }
+
+    // Fill modal fields
+    document.getElementById("edit-type-id").value = type.id;
+    document.getElementById("edit-type-name").value = type.type_name || "";
+    document.getElementById("edit-type-description").value = type.description || "";
+
+    // Open modal
+    openModal("edit-type-modal");
+}

@@ -453,11 +453,6 @@
                 <input type="hidden" id="edit-question-id" name="question-id">
 
                 <div class="form-group">
-                    <label class="form-label">Question Number</label>
-                    <input type="number" id="edit-question-number" name="question-number" class="form-input">
-                </div>
-
-                <div class="form-group">
                     <label class="form-label">Question Type</label>
                     <select id="edit-question-type" name="question-type" class="form-select"></select>
                 </div>
@@ -506,6 +501,39 @@
 
         </div>
     </div>
+    <div id="edit-type-modal" class="modal-overlay">
+
+    <div class="modal-card">
+
+        <div class="modal-header">
+            <h2>Edit Question Type</h2>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+
+        <form id="edit-type-form">
+
+            <input type="hidden" id="edit-type-id">
+
+            <div class="form-group">
+                <label class="form-label">Type Name</label>
+                <input type="text" id="edit-type-name" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Description</label>
+                <input type="text" id="edit-type-description" class="form-input">
+            </div>
+
+            <div class="modal-actions">
+                <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Update Type</button>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
 </body>
 <script src="admin.js"></script>
 
