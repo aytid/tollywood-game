@@ -90,7 +90,7 @@ function initializeSupabase() {
 }
 
 async function spinRandomQuestion() {
-
+    stopAllSounds();
     const spinBtn = document.getElementById('spin-btn');
     spinBtn.disabled = true;
 
@@ -518,7 +518,7 @@ async function revealAnswer() {
 
     gameState.lastSound = randomSound;
     var isSong = gameState.currentQuestion.question_type == "Guess the Song";
-    if(!isSong)
+    if(!isSong && isMultipleOf4(questionNumber))
     playSound(randomSound);
 
     // Mark question as used ONLY after answer revealed
@@ -831,4 +831,7 @@ function isPrime(n) {
 
 function isMultipleOf5(n) {
     return n % 5 === 0;
+}
+function isMultipleOf4(n) {
+    return n % 4 === 0;
 }
