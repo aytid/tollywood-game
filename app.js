@@ -209,20 +209,41 @@ function updateReadyScreen(question) {
 
 // Show Question Screen
 function showQuestion() {
+
     if (!gameState.currentQuestion) return;
 
     showScreen('question');
+
     updateQuestionScreen(gameState.currentQuestion);
 
-    const mediaType = gameState.currentQuestion.media_type;
+    const question = gameState.currentQuestion;
+    const typeName = question.question_types?.type_name || question.question_type || "";
 
-    if (mediaType == "image") {
+    const isAudioQuestion =
+        question.media_type === 'audio' ||
+        typeName.toLowerCase() === 'audio';
+
+    const isVideoQuestion =
+        question.media_type === 'video' ||
+        typeName.toLowerCase() === 'video';
+
+    const isImageQuestion =
+        question.media_type === 'image' || (!isAudioQuestion && !isVideoQuestion);
+
+    // Start timer only for image questions
+    if (isImageQuestion && question.timer_seconds !== 0) {
+
+        document.querySelector(".timer-container").style.display = "block";
         startTimer();
-    } else {
-        document.querySelector(".timer-container").style.display = "none";
-    }
-}
 
+    } else {
+
+        // Hide timer for audio/video
+        document.querySelector(".timer-container").style.display = "none";
+
+    }
+
+}
 // Initialize timer ring
 function initTimerRing() {
     const ring = document.getElementById('timer-ring');
@@ -318,6 +339,7 @@ function startTimer() {
 function updateQuestionScreen(question) {
 
     stopAllSounds();
+
     const typeName = question.question_types?.type_name || question.question_type || 'General';
 
     document.getElementById('question-type').textContent = typeName;
@@ -328,10 +350,10 @@ function updateQuestionScreen(question) {
     const questionTextContainer = document.getElementById("question-text-container");
     const questionText = document.getElementById("question-text");
 
-    // Clear media container
+    // Clear previous media
     mediaContainer.innerHTML = '';
 
-    // Determine media type
+    // Detect media type
     const isAudioQuestion =
         question.media_type === 'audio' ||
         question.question_type === 'Audio' ||
@@ -342,19 +364,20 @@ function updateQuestionScreen(question) {
         question.question_type === 'Video' ||
         typeName.toLowerCase() === 'video';
 
-    // Handle timer visibility based on media type
-    // Audio: Hide timer, Video: Show timer, Image/None: Show timer
-    if (isAudioQuestion || isVideoQuestion) {
-        // Audio - hide entire timer component
-        if (timerContainer) timerContainer.style.display = "none";
-    } else {
-        // Video or Image or None - show timer (if timer_seconds > 0)
+    const isImageQuestion =
+        question.media_type === 'image' || (!isAudioQuestion && !isVideoQuestion);
+
+    // TIMER LOGIC
+    if (isImageQuestion) {
+
         if (question.timer_seconds === 0) {
+
             if (timerContainer) timerContainer.style.display = "none";
+
         } else {
+
             if (timerContainer) timerContainer.style.display = "block";
 
-            // Reset timer display
             const timerDisplay = document.getElementById('timer-display');
             const timerText = document.getElementById('timer-text');
             const ring = document.getElementById('timer-ring');
@@ -364,26 +387,33 @@ function updateQuestionScreen(question) {
                 timerDisplay.classList.remove('warning', 'danger', 'times-up');
             }
 
-            // Reset timer text
             const timerSeconds = question.timer_seconds || 10;
+
             if (timerText) {
                 timerText.textContent = timerSeconds;
-                timerText.innerHTML = timerSeconds;
             }
 
-            // Reset ring
             timerCircumference = initTimerRing();
+
             if (ring) {
                 ring.style.strokeDashoffset = 0;
                 ring.style.stroke = '#ffd93d';
             }
+
         }
+
+    } else {
+
+        // Hide timer for audio/video
+        if (timerContainer) timerContainer.style.display = "none";
+
     }
 
-    // Handle media display
+    // MEDIA DISPLAY
     if (question.media_url) {
+
         if (isAudioQuestion) {
-            // Audio element
+
             const audio = document.createElement('audio');
             audio.src = question.media_url;
             audio.controls = true;
@@ -391,10 +421,13 @@ function updateQuestionScreen(question) {
             audio.preload = "metadata";
             audio.style.display = "block";
             audio.style.margin = "40px auto";
+
             mediaContainer.appendChild(audio);
 
-        } else if (isVideoQuestion) {
-            // Video element - larger size
+        }
+
+        else if (isVideoQuestion) {
+
             const video = document.createElement('video');
             video.src = question.media_url;
             video.controls = true;
@@ -403,10 +436,13 @@ function updateQuestionScreen(question) {
             video.style.width = "100%";
             video.style.maxWidth = "600px";
             video.style.borderRadius = "10px";
+
             mediaContainer.appendChild(video);
 
-        } else {
-            // Image - larger size
+        }
+
+        else {
+
             const img = document.createElement('img');
             img.src = question.media_url;
             img.alt = "Question Image";
@@ -414,19 +450,26 @@ function updateQuestionScreen(question) {
             img.style.width = "100%";
             img.style.maxWidth = "600px";
             img.style.borderRadius = "10px";
+
             mediaContainer.appendChild(img);
+
         }
+
     }
 
-    // Handle question text visibility
+    // QUESTION TEXT
     if (question.question_text && question.question_text.trim() !== "") {
+
         questionText.textContent = question.question_text;
         questionTextContainer.style.display = "block";
+
     } else {
+
         questionTextContainer.style.display = "none";
+
     }
 
-    // Reset buttons
+    // BUTTON RESET
     document.getElementById('start-timer-btn').style.display = 'none';
     document.getElementById('reveal-answer-btn').style.display = 'inline-flex';
     document.getElementById("next-question-btn-container").style.display = "none";
@@ -435,7 +478,6 @@ function updateQuestionScreen(question) {
     const answerOverlay = document.getElementById('answer-overlay');
     answerOverlay.classList.remove('show');
 }
-
 // Reveal Answer
 async function revealAnswer() {
 
