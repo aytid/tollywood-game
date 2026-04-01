@@ -145,7 +145,7 @@ async function spinRandomQuestion() {
 
         gameState.lastSound = randomSound;
 
-        playSound(randomSound);
+        //playSound(randomSound);
 
         // Load question
         await fetchQuestion(selectedNumber);
@@ -214,9 +214,9 @@ function showQuestion() {
     showScreen('question');
     updateQuestionScreen(gameState.currentQuestion);
 
-    const typeName = gameState.currentQuestion.question_types?.type_name || "";
+    const mediaType = gameState.currentQuestion.media_type;
 
-    if (typeName !== "Watch & Answer") {
+    if (mediaType == "image") {
         startTimer();
     } else {
         document.querySelector(".timer-container").style.display = "none";
@@ -344,7 +344,7 @@ function updateQuestionScreen(question) {
 
     // Handle timer visibility based on media type
     // Audio: Hide timer, Video: Show timer, Image/None: Show timer
-    if (isAudioQuestion) {
+    if (isAudioQuestion || isVideoQuestion) {
         // Audio - hide entire timer component
         if (timerContainer) timerContainer.style.display = "none";
     } else {
@@ -462,6 +462,10 @@ async function revealAnswer() {
         "ballari_bro",
         "chiranjeevi",
         "mahesh_babu",
+        "sunil",
+        "pothanu_annayya",
+        "rajshekhar",
+        "orey_aajamu",
     ];
 
     let randomSound;
