@@ -9,7 +9,7 @@ const gameState = {
     isSpinning: false,
     totalQuestions: 0
 };
-
+let activeSounds = [];
 // Initialize Supabase
 // let supabase;
 
@@ -245,7 +245,7 @@ function startTimer() {
 
     const timerSeconds = gameState.currentQuestion.timer_seconds || 10;
     gameState.timeRemaining = timerSeconds;
-
+    playSound("tick");
     // Initialize ring
     timerCircumference = initTimerRing();
 
@@ -316,6 +316,8 @@ function startTimer() {
 
 // Update Question Screen - Modified to handle media types and question text
 function updateQuestionScreen(question) {
+
+    stopAllSounds();
     const typeName = question.question_types?.type_name || question.question_type || 'General';
 
     document.getElementById('question-type').textContent = typeName;
@@ -439,6 +441,15 @@ async function revealAnswer() {
 
     if (!gameState.currentQuestion) return;
 
+    const media = document.querySelector('#media-container audio, #media-container video');
+
+    if (media) {
+        media.pause();
+        media.currentTime = media.currentTime;
+    }
+
+    stopAllSounds();
+
     document.getElementById("next-question-btn-container").style.display = "block";
 
     const questionNumber = Number(gameState.currentQuestion.question_number);
@@ -448,7 +459,9 @@ async function revealAnswer() {
         "chitikelu",
         "bittu",
         "wah_anna",
-        "ballari_bro"
+        "ballari_bro",
+        "chiranjeevi",
+        "mahesh_babu",
     ];
 
     let randomSound;
@@ -656,23 +669,27 @@ function fireConfetti() {
 // Sound Effects (placeholder - implement with actual audio files)
 function playSound(name) {
 
-    if (!name) {
-        return;
-    }
-    const filePath = `${name}.mp3`;
+    if (!name) return;
 
-    const audio = new Audio(filePath);
+    const audio = new Audio(`${name}.mp3`);
 
-    // Lower volume for ticks
-    if (name.includes("tick")) {
-        audio.volume = 0.4;
-    }
+    activeSounds.push(audio);
 
-    audio.play()
-        .then(() => {
-        })
-        .catch(err => {
-        });
+    audio.play().catch(err => {
+        console.warn("Audio blocked:", err);
+    });
+
+    audio.onended = () => {
+        activeSounds = activeSounds.filter(a => a !== audio);
+    };
+}
+function stopAllSounds() {
+    activeSounds.forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0;
+    });
+
+    activeSounds = [];
 }
 
 // Utility Functions
@@ -737,6 +754,8 @@ async function loadQuestionCount() {
 }
 async function playNextQuestion() {
 
+    stopAllSounds();
+
     if (gameState.timerInterval) {
         clearInterval(gameState.timerInterval);
     }
@@ -748,12 +767,7 @@ async function playNextQuestion() {
 
     await spinRandomQuestion();
 }
-function stopAllSounds() {
-    Object.values(sounds).forEach(sound => {
-        sound.pause();
-        sound.currentTime = 0;
-    });
-}
 function closeAnswerOverlay() {
     document.getElementById("answer-overlay").classList.remove("show");
 }
+
