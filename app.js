@@ -144,7 +144,7 @@ async function spinRandomQuestion() {
         } while (randomSound === gameState.lastSound);
 
         gameState.lastSound = randomSound;
-        if(isPrime(selectedNumber) || isMultipleOf5(selectedNumber))
+        if(isMultipleOf4(selectedNumber))
             playSound(randomSound);
 
         // Load question
