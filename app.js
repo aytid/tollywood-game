@@ -517,9 +517,9 @@ async function revealAnswer() {
     } while (randomSound === gameState.lastSound);
 
     gameState.lastSound = randomSound;
-    var isSong = gameState.currentQuestion.question_type == "Guess the Song";
-    if(!isSong && isMultipleOf4(questionNumber))
-    playSound(randomSound);
+    //var isSong = gameState.currentQuestion.question_type == "Guess the Song";
+    //if(!isSong && isMultipleOf4(questionNumber))
+    //playSound(randomSound);
 
     // Mark question as used ONLY after answer revealed
     if (!gameState.usedQuestions.includes(questionNumber)) {
@@ -540,6 +540,9 @@ async function revealAnswer() {
     answerOverlay.classList.add('show');
 
     fireConfetti();
+    if (isPrime(questionNumber) || isMultipleOf5(questionNumber)) {
+    showPrimeVideo();
+}
 
     // Update button visibility
     document.getElementById('reveal-answer-btn').style.display = 'none';
@@ -834,4 +837,68 @@ function isMultipleOf5(n) {
 }
 function isMultipleOf4(n) {
     return n % 4 === 0;
+}
+function showPrimeVideo() {
+
+    const videos = [
+        "chiru.mp4",
+        "mohanlal.mp4",
+        "kopadari_manishi.mp4",
+        "brahmi.mp4",
+        "naralu_cut.mp4",
+        "rakesh_master.mp4",
+        "chi_wow.mp4",
+        "sunil_sontham.mp4",
+        "garshana.mp4",
+        "madhelama.mp4",
+        "adiripole.mp4"
+    ];
+
+    const randomVideo = videos[Math.floor(Math.random() * videos.length)];
+
+    const video = document.createElement("video");
+
+    video.src = randomVideo;
+    video.autoplay = true;
+    video.muted = false;
+    video.playsInline = true;
+
+    // random vertical position
+    const randomTop = Math.random() * (window.innerHeight - 200);
+
+    // random size
+    const randomWidth = 180 + Math.random() * 120;
+
+    // random direction
+    const fromLeft = Math.random() > 0.5;
+
+    video.style.position = "fixed";
+    video.style.top = randomTop + "px";
+    video.style.width = randomWidth + "px";
+    video.style.zIndex = "9999";
+    video.style.borderRadius = "10px";
+    video.style.boxShadow = "0 10px 25px rgba(0,0,0,0.4)";
+    video.style.transition = "left 6s linear, right 6s linear";
+
+    if (fromLeft) {
+        video.style.left = "-300px";
+    } else {
+        video.style.right = "-300px";
+    }
+
+    document.body.appendChild(video);
+
+    setTimeout(() => {
+
+        if (fromLeft) {
+            video.style.left = "calc(100vw + 300px)";
+        } else {
+            video.style.right = "calc(100vw + 300px)";
+        }
+
+    }, 100);
+
+    setTimeout(() => {
+        video.remove();
+    }, 7000);
 }
