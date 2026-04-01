@@ -79,7 +79,6 @@ function initializeSupabase() {
         // Supabase CDN creates window.supabase with createClient method
         if (window.supabase && window.supabase.createClient) {
             supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-            console.log('Supabase initialized successfully');
         } else {
             console.error('Supabase library not loaded. Check CDN script tag.');
             showError('Supabase library failed to load. Please refresh the page.');
@@ -92,7 +91,6 @@ function initializeSupabase() {
 
 async function spinRandomQuestion() {
 
-    playSound("next-question");
     const spinBtn = document.getElementById('spin-btn');
     spinBtn.disabled = true;
 
@@ -126,7 +124,30 @@ async function spinRandomQuestion() {
         const randomIndex = Math.floor(Math.random() * availableNumbers.length);
         const selectedNumber = availableNumbers[randomIndex];
 
-        // DIRECTLY LOAD QUESTION (NO SPINNER)
+        // 🔊 Play random fun audio
+        const sounds = [
+            "kcr",
+            "niranjan_garu",
+            "ballari_bro",
+            "hmm_nagarjuna",
+            "sunil",
+            "pothanu_annayya",
+            "rajshekhar",
+            "creativity",
+            "orey_aajamu",
+        ];
+
+        let randomSound;
+
+        do {
+            randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+        } while (randomSound === gameState.lastSound);
+
+        gameState.lastSound = randomSound;
+
+        playSound(randomSound);
+
+        // Load question
         await fetchQuestion(selectedNumber);
 
         spinBtn.disabled = false;
@@ -415,10 +436,31 @@ function updateQuestionScreen(question) {
 
 // Reveal Answer
 async function revealAnswer() {
-    playSound("next-question");
+
     if (!gameState.currentQuestion) return;
+
     document.getElementById("next-question-btn-container").style.display = "block";
-    const questionNumber = gameState.currentQuestion.question_number;
+
+    const questionNumber = Number(gameState.currentQuestion.question_number);
+
+    // 🔊 Play random reaction sound
+    const sounds = [
+        "chitikelu",
+        "bittu",
+        "wah_anna",
+        "ballari_bro"
+    ];
+
+    let randomSound;
+
+    do {
+        randomSound = sounds[Math.floor(Math.random() * sounds.length)];
+    } while (randomSound === gameState.lastSound);
+
+    gameState.lastSound = randomSound;
+
+    playSound(randomSound);
+
     // Mark question as used ONLY after answer revealed
     if (!gameState.usedQuestions.includes(questionNumber)) {
         gameState.usedQuestions.push(questionNumber);
@@ -437,12 +479,7 @@ async function revealAnswer() {
     answerText.textContent = gameState.currentQuestion.answer || 'No answer provided';
     answerOverlay.classList.add('show');
 
-    // Play success sound and confetti
-    stopAllSounds();
     fireConfetti();
-
-    // Log game history
-    await logGameHistory(gameState.currentQuestion.question_number);
 
     // Update button visibility
     document.getElementById('reveal-answer-btn').style.display = 'none';
@@ -464,37 +501,6 @@ function resetGame() {
 
     const wheel = document.querySelector('.spinner-wheel');
     wheel.style.transform = 'rotate(0deg)';
-}
-
-// Log Game History to Supabase
-async function logGameHistory(questionNumber) {
-    try {
-        // Get or create session ID
-        let sessionId = sessionStorage.getItem('game_session_id');
-        if (!sessionId) {
-            sessionId = `session_${Date.now()}_${Math.random().toString(36).substring(7)}`;
-            sessionStorage.setItem('game_session_id', sessionId);
-        }
-
-        // Insert game history record
-        const { data, error } = await supabase
-            .from('game_history')
-            .insert([{
-                question_number: questionNumber,
-                player_name: "Rohan",
-                session_id: sessionId,
-                played_at: new Date().toISOString()
-            }])
-            .select();
-
-        if (error) {
-            console.error('Error logging game history:', error);
-        } else {
-            console.log('Game history logged successfully');
-        }
-    } catch (error) {
-        console.error('Error in logGameHistory:', error);
-    }
 }
 
 // Reset All Questions
@@ -647,32 +653,26 @@ function fireConfetti() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
     }, 5000);
 }
-
 // Sound Effects (placeholder - implement with actual audio files)
-function playSound(type) {
+function playSound(name) {
 
-    const soundFiles = {
-        spin: "spin.mp3",
-        tick: "tick.mp3",
-        "next-question": "next-question.mp3",
-        "tick-fast": "tick-fast.mp3",
-        "times-up": "times-up.mp3",
-        success: "success.mp3"
-    };
+    if (!name) {
+        return;
+    }
+    const filePath = `${name}.mp3`;
 
-    const file = soundFiles[type];
-    if (!file) return;
-
-    const audio = new Audio(file);
+    const audio = new Audio(filePath);
 
     // Lower volume for ticks
-    if (type.includes("tick")) {
+    if (name.includes("tick")) {
         audio.volume = 0.4;
     }
 
-    audio.play().catch(() => {
-        console.warn("Browser blocked audio until user interaction.");
-    });
+    audio.play()
+        .then(() => {
+        })
+        .catch(err => {
+        });
 }
 
 // Utility Functions
@@ -756,14 +756,4 @@ function stopAllSounds() {
 }
 function closeAnswerOverlay() {
     document.getElementById("answer-overlay").classList.remove("show");
-}
-
-const questionText = document.getElementById("question-text");
-const questionTextContainer = document.getElementById("question-text-container");
-
-if (question.question_text && question.question_text.trim() !== "") {
-    questionText.textContent = question.question_text;
-    questionTextContainer.style.display = "block";
-} else {
-    questionTextContainer.style.display = "none";
 }

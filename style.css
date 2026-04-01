@@ -534,6 +534,7 @@ header h1 {
 }
 
 .answer-card {
+    z-index: 100;
     background: linear-gradient(135deg, #1f1f3a, #2b2b55);
     padding: 40px 60px;
     border-radius: 20px;
