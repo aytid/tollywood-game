@@ -144,8 +144,8 @@ async function spinRandomQuestion() {
         } while (randomSound === gameState.lastSound);
 
         gameState.lastSound = randomSound;
-
-        //playSound(randomSound);
+        if(isPrime(selectedNumber) || isMultipleOf5(selectedNumber))
+            playSound(randomSound);
 
         // Load question
         await fetchQuestion(selectedNumber);
@@ -517,7 +517,8 @@ async function revealAnswer() {
     } while (randomSound === gameState.lastSound);
 
     gameState.lastSound = randomSound;
-
+    var isSong = gameState.currentQuestion.question_type == "Guess the Song";
+    if(!isSong)
     playSound(randomSound);
 
     // Mark question as used ONLY after answer revealed
@@ -817,3 +818,17 @@ function closeAnswerOverlay() {
     document.getElementById("answer-overlay").classList.remove("show");
 }
 
+function isPrime(n) {
+
+    if (n <= 1) return false;
+
+    for (let i = 2; i <= Math.sqrt(n); i++) {
+        if (n % i === 0) return false;
+    }
+
+    return true;
+}
+
+function isMultipleOf5(n) {
+    return n % 5 === 0;
+}
