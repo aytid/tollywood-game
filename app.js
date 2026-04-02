@@ -145,8 +145,8 @@ async function spinRandomQuestion() {
         } while (randomSound === gameState.lastSound);
 
         gameState.lastSound = randomSound;
-        if(isMultipleOf4(selectedNumber))
-            playSound(randomSound);
+        // if(isMultipleOf4(selectedNumber))
+        //     playSound(randomSound);
 
         // Load question
         await fetchQuestion(selectedNumber);
@@ -542,7 +542,7 @@ async function revealAnswer() {
 
     fireConfetti();
     if (isPrime(questionNumber) || isMultipleOf5(questionNumber)) {
-    showPrimeVideo();
+        showPrimeVideo();
 }
 
     // Update button visibility
@@ -861,6 +861,10 @@ function showPrimeVideo() {
         "srihari.mp4",
         "overaction.mp4",
         "prabhas_om.mp4",
+        "baane_extral.mp4",
+        "are_u_kamma.mp4",
+        "orey_aajamu.mp4",
+        "anr_hmm.mp4"
     ];
 
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
