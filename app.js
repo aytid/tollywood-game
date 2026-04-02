@@ -541,9 +541,8 @@ async function revealAnswer() {
     answerOverlay.classList.add('show');
 
     fireConfetti();
-    if (isPrime(questionNumber) || isMultipleOf5(questionNumber)) {
-        showPrimeVideo();
-}
+    //if (isPrime(questionNumber) || isMultipleOf5(questionNumber))
+    showPrimeVideo();
 
     // Update button visibility
     document.getElementById('reveal-answer-btn').style.display = 'none';
@@ -854,7 +853,7 @@ function showPrimeVideo() {
         "naralu_cut.mp4",
         "rakesh_master.mp4",
         "chi_wow.mp4",
-        "sunil_sontham.mp4",
+        "sunil.mp4",
         "garshana.mp4",
         "madhelama.mp4",
         "adiripole.mp4",
@@ -864,7 +863,13 @@ function showPrimeVideo() {
         "baane_extral.mp4",
         "are_u_kamma.mp4",
         "orey_aajamu.mp4",
-        "anr_hmm.mp4"
+        "anr_hmm.mp4",
+        "swalpa.mp4",
+        "backside.mp4",
+        "robo.mp4",
+        "oka_pani_chey.mp4",
+        "nagababu.mp4",
+        "nen_pothan.mp4",
     ];
 
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
