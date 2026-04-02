@@ -10,6 +10,7 @@ const gameState = {
     totalQuestions: 0
 };
 let activeSounds = [];
+let activePrimeVideo = null;
 // Initialize Supabase
 // let supabase;
 
@@ -805,6 +806,11 @@ async function loadQuestionCount() {
 async function playNextQuestion() {
 
     stopAllSounds();
+    
+    if (activePrimeVideo) {
+        activePrimeVideo.remove();
+        activePrimeVideo = null;
+    }
 
     if (gameState.timerInterval) {
         clearInterval(gameState.timerInterval);
@@ -859,6 +865,7 @@ function showPrimeVideo() {
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
 
     const video = document.createElement("video");
+    activePrimeVideo = video;
 
     video.src = randomVideo;
     video.autoplay = true;
@@ -874,7 +881,6 @@ function showPrimeVideo() {
     video.style.boxShadow = "0 10px 25px rgba(0,0,0,0.4)";
     video.style.transition = "all 5s linear";
 
-    // keep inside screen
     const startX = Math.random() * (window.innerWidth - randomWidth);
     const startY = Math.random() * (window.innerHeight - 200);
 
@@ -895,5 +901,6 @@ function showPrimeVideo() {
 
     video.addEventListener("ended", () => {
         video.remove();
+        activePrimeVideo = null;
     });
 }
