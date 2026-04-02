@@ -851,7 +851,9 @@ function showPrimeVideo() {
         "sunil_sontham.mp4",
         "garshana.mp4",
         "madhelama.mp4",
-        "adiripole.mp4"
+        "adiripole.mp4",
+        "srihari.mp4",
+        "overaction.mp4",
     ];
 
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
@@ -863,42 +865,35 @@ function showPrimeVideo() {
     video.muted = false;
     video.playsInline = true;
 
-    // random vertical position
-    const randomTop = Math.random() * (window.innerHeight - 200);
-
-    // random size
     const randomWidth = 180 + Math.random() * 120;
 
-    // random direction
-    const fromLeft = Math.random() > 0.5;
-
     video.style.position = "fixed";
-    video.style.top = randomTop + "px";
     video.style.width = randomWidth + "px";
     video.style.zIndex = "9999";
     video.style.borderRadius = "10px";
     video.style.boxShadow = "0 10px 25px rgba(0,0,0,0.4)";
-    video.style.transition = "left 6s linear, right 6s linear";
+    video.style.transition = "all 5s linear";
 
-    if (fromLeft) {
-        video.style.left = "-300px";
-    } else {
-        video.style.right = "-300px";
-    }
+    // keep inside screen
+    const startX = Math.random() * (window.innerWidth - randomWidth);
+    const startY = Math.random() * (window.innerHeight - 200);
+
+    video.style.left = startX + "px";
+    video.style.top = startY + "px";
 
     document.body.appendChild(video);
 
     setTimeout(() => {
 
-        if (fromLeft) {
-            video.style.left = "calc(100vw + 300px)";
-        } else {
-            video.style.right = "calc(100vw + 300px)";
-        }
+        const endX = Math.random() * (window.innerWidth - randomWidth);
+        const endY = Math.random() * (window.innerHeight - 200);
+
+        video.style.left = endX + "px";
+        video.style.top = endY + "px";
 
     }, 100);
 
-    setTimeout(() => {
+    video.addEventListener("ended", () => {
         video.remove();
-    }, 7000);
+    });
 }
