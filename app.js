@@ -310,7 +310,7 @@ function startTimer() {
             clearInterval(gameState.timerInterval);
             const questionText = document.getElementById("question-text");
             const questionContainer = document.getElementById("question-text-container");
-            
+
             if (questionText && questionText.textContent.trim() !== "") {
                 questionContainer.style.display = "block";
                 questionText.style.display = "block";
@@ -443,12 +443,26 @@ function updateQuestionScreen(question) {
             video.controls = true;
             video.autoplay = true;
             video.preload = "metadata";
+            // video.style.width = "100%";
+            // video.style.maxWidth = "600px";
+            // video.style.borderRadius = "10px";
+
             video.style.width = "100%";
-            video.style.maxWidth = "600px";
+            video.style.maxWidth = "100%";
             video.style.borderRadius = "10px";
 
             mediaContainer.appendChild(video);
+                video.addEventListener("ended", () => {
 
+        const questionText = document.getElementById("question-text");
+        const questionContainer = document.getElementById("question-text-container");
+
+        if (questionText && questionText.textContent.trim() !== "") {
+            questionContainer.style.display = "block";
+            questionText.style.display = "block";
+        }
+
+    });
         }
 
         else {
@@ -873,7 +887,6 @@ function showPrimeVideo() {
         "are_u_kamma.mp4",
         "orey_aajamu.mp4",
         "swalpa.mp4",
-        "backside.mp4",
         "robo.mp4",
         "oka_pani_chey.mp4",
         "nagababu.mp4",
@@ -881,6 +894,7 @@ function showPrimeVideo() {
         "bittu.mp4",
         "mahesh_babu.mp4",
         "wah_anna.mp4",
+        "mro_office.mp4",
     ];
 
     let randomVideo;
@@ -903,11 +917,15 @@ function showPrimeVideo() {
     const randomWidth = 180 + Math.random() * 120;
 
     video.style.position = "fixed";
-    video.style.width = randomWidth + "px";
+    //video.style.width = randomWidth + "px";
     video.style.zIndex = "9999";
-    video.style.borderRadius = "10px";
+    //video.style.borderRadius = "10px";
     video.style.boxShadow = "0 10px 25px rgba(0,0,0,0.4)";
     video.style.transition = "all 5s linear";
+
+            video.style.width = "30%";
+            video.style.maxWidth = "70%";
+            video.style.borderRadius = "10px";
 
     const startX = Math.random() * (window.innerWidth - randomWidth);
     const startY = Math.random() * (window.innerHeight - 200);
