@@ -863,7 +863,6 @@ function showPrimeVideo() {
         "baane_extral.mp4",
         "are_u_kamma.mp4",
         "orey_aajamu.mp4",
-        "anr_hmm.mp4",
         "swalpa.mp4",
         "backside.mp4",
         "robo.mp4",
