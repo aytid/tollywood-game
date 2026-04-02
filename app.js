@@ -541,7 +541,7 @@ async function revealAnswer() {
     answerOverlay.classList.add('show');
 
     fireConfetti();
-    //if (isPrime(questionNumber) || isMultipleOf5(questionNumber))
+    if (isPrime(questionNumber) || isMultipleOf5(questionNumber))
     showPrimeVideo();
 
     // Update button visibility
@@ -870,6 +870,9 @@ function showPrimeVideo() {
         "oka_pani_chey.mp4",
         "nagababu.mp4",
         "nen_pothan.mp4",
+        "bittu.mp4",
+        "mahesh_babu.mp4",
+        "wah_anna.mp4",
     ];
 
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
