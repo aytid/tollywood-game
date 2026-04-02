@@ -773,32 +773,6 @@ header h1 {
     border-radius:6px;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 /* Animated Background - ENHANCED VERSION */
 .bg-animation {
     position: fixed;
@@ -1085,4 +1059,65 @@ header h1 {
     0% { transform: scale(0.8); opacity: 0; }
     50% { transform: scale(1.1); }
     100% { transform: scale(1); opacity: 1; }
+}
+
+
+
+
+
+
+
+
+
+.card-credit {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-size: 15px;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.card-credit a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.card-credit a:hover {
+    text-decoration: underline;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.card-credit {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    background: linear-gradient(90deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: gradientShift 3s ease infinite;
+    text-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+}
+
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }

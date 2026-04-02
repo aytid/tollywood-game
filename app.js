@@ -308,13 +308,21 @@ function startTimer() {
         // TIME UP
         if (gameState.timeRemaining <= 0) {
             clearInterval(gameState.timerInterval);
+            
+            // FIX: Check the current question's question_text, not the DOM element
+            const currentQuestionText = gameState.currentQuestion.question_text;
             const questionText = document.getElementById("question-text");
             const questionContainer = document.getElementById("question-text-container");
 
-            if (questionText && questionText.textContent.trim() !== "") {
+            // Only show if current question actually HAS question_text
+            if (questionText && currentQuestionText && currentQuestionText.trim() !== "") {
                 questionContainer.style.display = "block";
                 questionText.style.display = "block";
+            } else {
+                // Hide the container if no question text for this question
+                if (questionContainer) questionContainer.style.display = "none";
             }
+            
             // Transform to Time's Up state
             timerDisplay.classList.add('times-up');
             if (timerText) {

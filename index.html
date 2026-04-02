@@ -20,9 +20,9 @@
         <div class="shape"></div>
         <div class="shape"></div>
     </div>
-        <!-- Particles Container -->
+    <!-- Particles Container -->
     <div class="particles" id="particles"></div>
-    
+
     <!-- Noise Overlay -->
     <div class="noise-overlay"></div>
 
@@ -44,6 +44,9 @@
         <div id="landing-screen" class="game-screen active">
 
             <div class="glass-card" style="text-align: center;">
+
+                <div class="card-credit">By <a href="https://www.linkedin.com/in/rohan-aditya-thirumala-6b8228264/" target="_blank">Rohan Aditya</a></div>
+
                 <div class="banner-container">
                     <img style="height: 200px;" src="tollywood-tamasha.png" alt="Tollywood Tamasha">
                 </div>
@@ -69,14 +72,16 @@
                     <button id="spin-btn" class="btn btn-primary">Start Game</button>
                     <button id="reset-game-btn" class="btn btn-secondary">Reset All</button>
                 </div>
+                
             </div>
         </div>
 
         <!-- READY SCREEN -->
         <div id="ready-screen" class="game-screen">
-            
+
             <div class="glass-card" style="text-align: center;">
-                <div class ="top" style="display: flex;flex-direction: row;justify-content: space-between;">
+                <div class="card-credit">By <a href="https://www.linkedin.com/in/rohan-aditya-thirumala-6b8228264/" target="_blank">Rohan Aditya</a></div>
+                <div class="top" style="display: flex;flex-direction: row;justify-content: space-between;">
                     <div class="question-number-display" id="ready-question-number">#1</div>
                     <!-- <div class="banner-container">
                         <img style="height: 150px;" src="tollywood-tamasha.png" alt="Tollywood Tamasha">
@@ -93,115 +98,106 @@
                 <div class="btn-container">
                     <button id="ready-next-btn" class="btn btn-accent">Reveal Question</button>
                     <button class="btn btn-secondary" onclick="resetGame()">Home</button>
-                    <button id="ready-other-btn" class="btn btn-accent" onclick="spinRandomQuestion()">Other Question</button>
+                    <button id="ready-other-btn" class="btn btn-accent" onclick="spinRandomQuestion()">Other
+                        Question</button>
                 </div>
             </div>
         </div>
 
         <!-- QUESTION SCREEN -->
-<div id="question-screen" class="game-screen">
+        <div id="question-screen" class="game-screen">
 
-    <div class="glass-card">
+            <div class="glass-card">
+                <div class="card-credit">By <a href="https://www.linkedin.com/in/rohan-aditya-thirumala-6b8228264/" target="_blank">Rohan Aditya</a></div>
+                <!-- Question Type -->
+                <div style="text-align:center;">
+                    <span class="question-type-badge" id="question-type">Guess the Movie</span>
+                </div>
 
-        <!-- Question Type -->
-        <div style="text-align:center;">
-            <span class="question-type-badge" id="question-type">Guess the Movie</span>
-        </div>
+                <!-- Question Number -->
+                <div style="text-align:center;margin-bottom:20px;">
+                    <span id="question-number" style="font-size:1.2rem;color:var(--text-muted);">
+                        Question #1
+                    </span>
+                </div>
 
-        <!-- Question Number -->
-        <div style="text-align:center;margin-bottom:20px;">
-            <span id="question-number" style="font-size:1.2rem;color:var(--text-muted);">
-                Question #1
-            </span>
-        </div>
+                <!-- Layout -->
+                <div class="question-layout">
 
-        <!-- Layout -->
-        <div class="question-layout">
+                    <!-- Media -->
+                    <div class="media-container" id="media-container">
+                        <div class="media-placeholder">Loading media...</div>
+                    </div>
 
-            <!-- Media -->
-            <div class="media-container" id="media-container">
-                <div class="media-placeholder">Loading media...</div>
-            </div>
+                    <!-- Question Text -->
+                    <div class="question-text-container" id="question-text-container">
+                        <div id="question-text"></div>
+                    </div>
 
-            <!-- Question Text -->
-            <div class="question-text-container" id="question-text-container">
-                <div id="question-text"></div>
-            </div>
+                    <!-- Side Panel -->
+                    <div class="question-side">
 
-            <!-- Side Panel -->
-            <div class="question-side">
+                        <div class="timer-container" id="timer-container">
 
-                <div class="timer-container" id="timer-container">
+                            <div class="timer-display" id="timer-display">
 
-                    <div class="timer-display" id="timer-display">
+                                <svg class="timer-ring-container" viewBox="0 0 156 156">
 
-                        <svg class="timer-ring-container" viewBox="0 0 156 156">
+                                    <circle class="timer-ring-bg" cx="78" cy="78" r="74"></circle>
 
-                            <circle class="timer-ring-bg" cx="78" cy="78" r="74"></circle>
+                                    <circle class="timer-ring-progress" id="timer-ring" cx="78" cy="78" r="74"></circle>
 
-                            <circle class="timer-ring-progress"
-                                    id="timer-ring"
-                                    cx="78"
-                                    cy="78"
-                                    r="74"></circle>
+                                </svg>
 
-                        </svg>
+                                <span id="timer-text">10</span>
 
-                        <span id="timer-text">10</span>
+                            </div>
+
+                            <!-- <span class="timer-label" id="timer-label">Seconds</span> -->
+
+                        </div>
 
                     </div>
 
-                    <!-- <span class="timer-label" id="timer-label">Seconds</span> -->
+                </div>
+
+                <!-- Answer Overlay -->
+                <div id="answer-overlay" class="answer-overlay">
+
+                    <div class="answer-card">
+
+                        <button class="answer-close-btn" onclick="closeAnswerOverlay()">✕</button>
+
+                        <h2>Answer</h2>
+
+                        <div id="answer-text"></div>
+
+                    </div>
+
+                </div>
+
+                <!-- Buttons -->
+                <div class="btn-container">
+
+                    <button id="start-timer-btn" class="btn btn-primary">Start Timer</button>
+
+                    <button id="reveal-answer-btn" class="btn btn-success" style="display:none;">Reveal Answer</button>
+
+                    <button class="btn btn-success" onclick="location.href='index.html'">Home</button>
+
+                </div>
+
+                <div id="next-question-btn-container" style="display:none;text-align:center;margin-top:20px;">
+
+                    <button class="btn btn-success" onclick="playNextQuestion()">Next Question</button>
 
                 </div>
 
             </div>
 
         </div>
-
-        <!-- Answer Overlay -->
-        <div id="answer-overlay" class="answer-overlay">
-
-            <div class="answer-card">
-
-                <button class="answer-close-btn"
-                        onclick="closeAnswerOverlay()">✕</button>
-
-                <h2>Answer</h2>
-
-                <div id="answer-text"></div>
-
-            </div>
-
-        </div>
-
-        <!-- Buttons -->
-        <div class="btn-container">
-
-            <button id="start-timer-btn"
-                    class="btn btn-primary">Start Timer</button>
-
-            <button id="reveal-answer-btn"
-                    class="btn btn-success"
-                    style="display:none;">Reveal Answer</button>
-
-            <button class="btn btn-success"
-                    onclick="location.href='index.html'">Home</button>
-
-        </div>
-
-        <div id="next-question-btn-container"
-             style="display:none;text-align:center;margin-top:20px;">
-
-            <button class="btn btn-success"
-                    onclick="playNextQuestion()">Next Question</button>
-
-        </div>
-
     </div>
 
-</div>
-    </div>
 
     <!-- Admin Link -->
     <a href="admin.html" class="admin-link">⚙️ Admin Panel</a>
@@ -209,12 +205,12 @@
     <!-- Scripts -->
     <script src="supabase.js"></script>
     <script src="app.js"></script>
-        <!-- Particle Generator Script -->
+    <!-- Particle Generator Script -->
     <script>
         // Generate floating particles
         const particlesContainer = document.getElementById('particles');
         const particleCount = 30;
-        
+
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
             particle.className = 'particle';
@@ -225,13 +221,13 @@
             particle.style.width = particle.style.height = (Math.random() * 3 + 1) + 'px';
             particlesContainer.appendChild(particle);
         }
-        
+
         // Mouse parallax effect for orbs
         document.addEventListener('mousemove', (e) => {
             const shapes = document.querySelectorAll('.shape');
             const x = e.clientX / window.innerWidth;
             const y = e.clientY / window.innerHeight;
-            
+
             shapes.forEach((shape, index) => {
                 const speed = (index + 1) * 15;
                 const xOffset = (x - 0.5) * speed;
