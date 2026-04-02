@@ -806,7 +806,7 @@ async function loadQuestionCount() {
 async function playNextQuestion() {
 
     stopAllSounds();
-    
+
     if (activePrimeVideo) {
         activePrimeVideo.remove();
         activePrimeVideo = null;
@@ -860,6 +860,7 @@ function showPrimeVideo() {
         "adiripole.mp4",
         "srihari.mp4",
         "overaction.mp4",
+        "prabhas_om.mp4",
     ];
 
     const randomVideo = videos[Math.floor(Math.random() * videos.length)];
