@@ -564,7 +564,7 @@ async function revealAnswer() {
     answerOverlay.classList.add('show');
 
     fireConfetti();
-    //if (isPrime(questionNumber) || isMultipleOf5(questionNumber))
+    if (isPrime(questionNumber) || isMultipleOf5(questionNumber))
     showPrimeVideo();
 
     // Update button visibility
