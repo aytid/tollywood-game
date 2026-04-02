@@ -11,6 +11,7 @@ const gameState = {
 };
 let activeSounds = [];
 let activePrimeVideo = null;
+let lastPrimeVideo = null;
 // Initialize Supabase
 // let supabase;
 
@@ -307,7 +308,13 @@ function startTimer() {
         // TIME UP
         if (gameState.timeRemaining <= 0) {
             clearInterval(gameState.timerInterval);
-
+            const questionText = document.getElementById("question-text");
+            const questionContainer = document.getElementById("question-text-container");
+            
+            if (questionText && questionText.textContent.trim() !== "") {
+                questionContainer.style.display = "block";
+                questionText.style.display = "block";
+            }
             // Transform to Time's Up state
             timerDisplay.classList.add('times-up');
             if (timerText) {
@@ -338,7 +345,9 @@ function startTimer() {
 
 // Update Question Screen - Modified to handle media types and question text
 function updateQuestionScreen(question) {
-
+    
+    document.getElementById("question-text").style.display = "none";
+    document.getElementById("question-text-container").style.display = "none";
     stopAllSounds();
 
     const typeName = question.question_types?.type_name || question.question_type || 'General';
@@ -541,7 +550,7 @@ async function revealAnswer() {
     answerOverlay.classList.add('show');
 
     fireConfetti();
-    if (isPrime(questionNumber) || isMultipleOf5(questionNumber))
+    //if (isPrime(questionNumber) || isMultipleOf5(questionNumber))
     showPrimeVideo();
 
     // Update button visibility
@@ -874,7 +883,14 @@ function showPrimeVideo() {
         "wah_anna.mp4",
     ];
 
-    const randomVideo = videos[Math.floor(Math.random() * videos.length)];
+    let randomVideo;
+
+    // prevent same video twice in a row
+    do {
+        randomVideo = videos[Math.floor(Math.random() * videos.length)];
+    } while (randomVideo === lastPrimeVideo && videos.length > 1);
+
+    lastPrimeVideo = randomVideo;
 
     const video = document.createElement("video");
     activePrimeVideo = video;
